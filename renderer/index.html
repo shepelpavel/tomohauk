@@ -13,6 +13,15 @@
     <button class="js-run-bash" data-bash="restart_apache">Restart apache</button>
     <button class="js-run-bash" data-bash="edit_mysites">Edit mysites.conf</button>
     <button class="js-run-bash" data-bash="edit_hosts">Edit hosts</button>
+    <select class="js-php-v-select" name="select">
+        <option disabled></option>
+        <option data-get="php5.6.load" value="php5.6-set">php5.6</option>
+        <option data-get="php7.0.load" value="php7.0-set">php7.0</option>
+        <option data-get="php7.1.load" value="php7.1-set">php7.1</option>
+        <option data-get="php7.2.load" value="php7.2-set">php7.2</option>
+        <option data-get="php7.3.load" value="php7.3-set">php7.3</option>
+        <option data-get="php7.4.load" value="php7.4-set">php7.4</option>
+    </select>
     <hr>
     <textarea rows="20" cols="60" id="terminal" disabled="true"></textarea>
     <script src="./script.js"></script>
