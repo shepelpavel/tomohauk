@@ -1,3 +1,5 @@
+window.$ = window.jQuery = require('jquery');
+
 const __process = require('child_process');
 const __bashPath = __dirname + '/../resources/bash/';
 
@@ -25,10 +27,9 @@ function runBash(_target) {
     });
 }
 
-var elements = document.querySelectorAll('.js-run-bash');
-for (var element of elements) {
-    element.addEventListener("click", function () {
-        var _target = this.getAttribute('data-bash');
+$(document).ready(function () {
+    $('.js-run-bash').on('click', function() {
+        var _target = $(this).attr('data-bash');
         runBash(_target);
     });
-}
+});
