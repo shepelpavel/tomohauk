@@ -1,11 +1,13 @@
 window.$ = window.jQuery = require('jquery');
 
-const __process = require('child_process');
+const {
+    exec
+} = require("child_process");
 const __bashPath = __dirname + '/../resources/bash/';
 
 function bashResult(msg) {
-    var _terminal = document.getElementById('terminal');
-    _terminal.value += (msg);
+    var _res = msg.replace(/\r|\n/g, '<br>');
+    $('#terminal').append(_res);
 };
 
 function phpVerResult(msg) {
@@ -18,40 +20,38 @@ function phpVerResult(msg) {
 };
 
 function getPhpVer() {
-    var _child_php = __process.spawn(__bashPath + 'get_php_v.sh');
-    _child_php.on('error', function (err) {
-        phpVerResult('__error__:' + err);
-    });
-
-    _child_php.stdout.on('data', function (data) {
+    var _command = __bashPath + 'get_php_v.sh';
+    exec(_command, (error, data, getter) => {
+        if (error) {
+            bashResult('__error__: ' + error.message);
+            console.log(error.message);
+            return;
+        }
+        if (getter) {
+            bashResult('__getter__: ' + data);
+            console.log(data);
+            return;
+        }
         phpVerResult(data);
-    });
-
-    _child_php.stderr.on('data', function (data) {
-        phpVerResult('__error__: ' + data);
-    });
-
-    _child_php.on('close', function (code) {
-        console.log('__php_v_block_code__: ' + code);
+        console.log(_command);
     });
 }
 
-function runBash(_target) {
-    var _child = __process.spawn(__bashPath + _target + '.sh');
-    _child.on('error', function (err) {
-        bashResult('__error__: ' + err);
-    });
-
-    _child.stdout.on('data', function (data) {
-        bashResult('__out__: ' + data);
-    });
-
-    _child.stderr.on('data', function (data) {
-        bashResult('__error__: ' + data);
-    });
-
-    _child.on('close', function (code) {
-        console.log('__child_close_code__: ' + code);
+function runBash(_target, _var = '') {
+    var _command = 'bash ' + __bashPath + _target + '.sh' + _var;
+    exec(_command, (error, data, getter) => {
+        if (error) {
+            bashResult('__error__: ' + error.message);
+            console.log(error.message);
+            return;
+        }
+        if (getter) {
+            bashResult('__getter__: ' + data);
+            console.log(data);
+            return;
+        }
+        bashResult('__out__:<br>' + data);
+        console.log(_command);
     });
 }
 
@@ -65,6 +65,6 @@ $(document).ready(function () {
 
     $('.js-php-v-select').on('change', function () {
         var _target_ver = $(this).val();
-        runBash(_target_ver);
+        runBash('set_php', ' ' + _target_ver);
     });
 });
