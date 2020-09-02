@@ -6,8 +6,8 @@ function bashResult(msg) {
     _terminal.value += (msg);
 };
 
-function runTest() {
-    var _child = __process.spawn(__bashPath + 'test.sh');
+function runBash(_target) {
+    var _child = __process.spawn(__bashPath + _target + '.sh');
     _child.on('error', function (err) {
         bashResult('__error__: ' + err);
     });
@@ -25,7 +25,10 @@ function runTest() {
     });
 }
 
-button = document.getElementById('test');
-button.addEventListener("click", function () {
-    runTest();
-});
+var elements = document.querySelectorAll('.js-run-bash');
+for (var element of elements) {
+    element.addEventListener("click", function () {
+        var _target = this.getAttribute('data-bash');
+        runBash(_target);
+    });
+}
