@@ -6,21 +6,22 @@ function bashResult(msg) {
 };
 
 function runTest() {
-    var child = process.spawn('./test.sh');
+    // /usr/lib/apacheconfigelectron/resources/app/
+    var child = process.spawn(__dirname + '/test.sh');
     child.on('error', function (err) {
-        bashResult('-- ' + data);
+        bashResult('__error__: ' + err);
     });
 
     child.stdout.on('data', function (data) {
-        bashResult('-- ' + data);
+        bashResult('__out__: ' + data);
     });
 
     child.stderr.on('data', function (data) {
-        bashResult('-- ' + data);
+        bashResult('__err__: ' + data);
     });
 
     child.on('close', function (code) {
-        console.log(code);
+        console.log('__child_close_code__: ' + code);
     });
 }
 

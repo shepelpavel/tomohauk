@@ -1,28 +1,28 @@
 {
-  "name": "apacheconfigelectron",
-  "productName": "apacheconfigelectron",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "build": "electron-packager . --platform linux --arch x64 --out dist/",
-    "deb64": "electron-installer-debian --src dist/apacheconfigelectron-linux-x64/ --dest dist/installers/ --arch amd64"
-  },
-  "repository": "https://github.com/electron/electron-quick-start",
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
-  "devDependencies": {
-    "electron": "^10.1.0",
-    "electron-installer-debian": "^3.1.0",
-    "electron-is": "^3.0.0",
-    "electron-packager": "^15.1.0"
-  }
+    "name": "tomohauk",
+    "executableName": "Tomohauk",
+    "productName": "Tomohauk",
+    "version": "0.0.5",
+    "description": "Apache config electron",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "build": "electron-packager . tomohauk --platform linux --arch x64 --out dist/ --overwrite --icon=icons/icon.png",
+        "deb64": "electron-installer-debian --src dist/tomohauk-linux-x64/ --dest dist/installers/ --arch amd64"
+    },
+    "repository": "https://github.com/shepelpavel/apache-config-electron",
+    "keywords": [
+        "Apache",
+        "config",
+        "electron",
+        "tomohauk"
+    ],
+    "author": "Shepel",
+    "license": "MIT",
+    "devDependencies": {
+        "electron": "^10.1.0",
+        "electron-installer-debian": "^3.1.0",
+        "electron-is": "^3.0.0",
+        "electron-packager": "^15.1.0"
+    }
 }
