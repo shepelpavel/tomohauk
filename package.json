@@ -17,9 +17,7 @@
         "electron",
         "tomohauk"
     ],
-
     "main": "main.js",
-
     "scripts": {
         "clean": "rimraf dist",
         "start": "electron .",
