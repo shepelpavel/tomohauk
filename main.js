@@ -5,25 +5,28 @@ const {
 } = require('electron')
 const path = require('path')
 
-var iconPath = path.join(__dirname, './icon.png')
-
 function createWindow() {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
-        icon: __dirname + '/icons/icon.ico',
+        width: 600,
+        height: 400,
+        minWidth: 600,
+        minHeight: 400,
+        autoHideMenuBar: true,
+        backgroundColor: '#262626',
+        icon: './resources/icons/icon.png',
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: true
+            preload: path.join(__dirname, '/renderer/preload.js'),
+            nodeIntegration: true,
+            worldSafeExecuteJavaScript: true
         }
     })
 
     // and load the index.html of the app.
-    mainWindow.loadFile('index.html')
+    mainWindow.loadFile('renderer/index.html')
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished

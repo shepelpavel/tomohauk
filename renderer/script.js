@@ -1,4 +1,5 @@
-const process = require('child_process');
+const __process = require('child_process');
+const __bashPath = __dirname + '/../resources/bash/';
 
 function bashResult(msg) {
     var _terminal = document.getElementById('terminal');
@@ -6,21 +7,20 @@ function bashResult(msg) {
 };
 
 function runTest() {
-    // /usr/lib/apacheconfigelectron/resources/app/
-    var child = process.spawn(__dirname + '/test.sh');
-    child.on('error', function (err) {
+    var _child = __process.spawn(__bashPath + 'test.sh');
+    _child.on('error', function (err) {
         bashResult('__error__: ' + err);
     });
 
-    child.stdout.on('data', function (data) {
+    _child.stdout.on('data', function (data) {
         bashResult('__out__: ' + data);
     });
 
-    child.stderr.on('data', function (data) {
+    _child.stderr.on('data', function (data) {
         bashResult('__err__: ' + data);
     });
 
-    child.on('close', function (code) {
+    _child.on('close', function (code) {
         console.log('__child_close_code__: ' + code);
     });
 }

@@ -2,13 +2,13 @@
     "name": "tomohauk",
     "executableName": "Tomohauk",
     "productName": "Tomohauk",
-    "version": "0.0.5",
     "description": "Apache config electron",
-    "main": "main.js",
-    "scripts": {
-        "start": "electron .",
-        "build": "electron-packager . tomohauk --platform linux --arch x64 --out dist/ --overwrite --icon=icons/icon.png",
-        "deb64": "electron-installer-debian --src dist/tomohauk-linux-x64/ --dest dist/installers/ --arch amd64"
+    "version": "0.0.8",
+    "license": "MIT",
+    "author": {
+        "name": "Shepel Pavel",
+        "email": "pavel@shepel.net",
+        "url": "https://shepel.net/"
     },
     "repository": "https://github.com/shepelpavel/apache-config-electron",
     "keywords": [
@@ -17,8 +17,15 @@
         "electron",
         "tomohauk"
     ],
-    "author": "Shepel",
-    "license": "MIT",
+
+    "main": "main.js",
+
+    "scripts": {
+        "clean": "rimraf dist",
+        "start": "electron .",
+        "build:64": "electron-packager . tomohauk --platform linux --arch x64 --out dist/ --overwrite",
+        "deb:64": "electron-installer-debian --src dist/tomohauk-linux-x64/ --arch amd64 --config config.json"
+    },
     "devDependencies": {
         "electron": "^10.1.0",
         "electron-installer-debian": "^3.1.0",
