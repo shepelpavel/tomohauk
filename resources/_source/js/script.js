@@ -73,4 +73,11 @@ $(document).ready(function () {
         _target_domain = _target_domain.replace(/[^0-9A-Za-z\-]/g, "");
         runBash('add_domain', ' ' + _target_domain);
     });
+
+    $('.js-rescan-dirs').on('click', function () {
+        var u_confirm = confirm('Reconfigure hosts and sites file?');
+        if (u_confirm) {
+            runBash('rescan_dirs');
+        }
+    });
 });

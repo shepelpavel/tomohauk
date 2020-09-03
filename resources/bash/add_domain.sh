@@ -23,5 +23,6 @@ else
     echo "        Require all granted"                  >> $mysites
     echo "    </Directory>"                             >> $mysites
     echo "</VirtualHost>"                               >> $mysites
+    service apache2 restart
     echo "Domain added."
 fi
