@@ -1,9 +1,9 @@
 window.$ = window.jQuery = require('jquery');
 
-const {
+var {
     exec
 } = require("child_process");
-const __bashPath = __dirname + '/../resources/bash/';
+var _bashPath = __dirname + '/../resources/bash/';
 
 function bashResult(msg) {
     var _res = msg.replace(/\r|\n/g, '<br>');
@@ -20,8 +20,8 @@ function phpVerResult(msg) {
 };
 
 function getPhpVer() {
-    var _command = __bashPath + 'get_php_v.sh';
-    exec(_command, (error, data, getter) => {
+    var _command = _bashPath + 'get_php_v.sh';
+    exec(_command, function (error, data, getter) {
         if (error) {
             bashResult('__error__: ' + error.message);
             console.log(error.message);
@@ -38,8 +38,8 @@ function getPhpVer() {
 }
 
 function runBash(_target, _var = '') {
-    var _command = 'bash ' + __bashPath + _target + '.sh' + _var;
-    exec(_command, (error, data, getter) => {
+    var _command = 'bash ' + _bashPath + _target + '.sh' + _var;
+    exec(_command, function (error, data, getter) {
         if (error) {
             bashResult('__error__: ' + error.message);
             console.log(error.message);
