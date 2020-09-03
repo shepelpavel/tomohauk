@@ -80,4 +80,10 @@ $(document).ready(function () {
             runBash('rescan_dirs');
         }
     });
+
+    $('.js-change-owner').on('click', function () {
+        var _target_owner = $('.js-change-owner-input').val();
+        _target_owner = _target_owner.replace(/[^0-9A-Za-z\-]/g, "");
+        runBash('change_owner', ' ' + _target_owner);
+    });
 });
