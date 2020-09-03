@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RESULT=$(sudo service apache2 restart)
+RESULT=$(service apache2 restart)
 if [ -z "$RESULT" ]
 then
     RESULT='done'

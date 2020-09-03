@@ -38,7 +38,7 @@ function getPhpVer() {
 }
 
 function runBash(_target, _var = '') {
-    var _command = 'bash ' + _bashPath + _target + '.sh' + _var;
+    var _command = 'sudo bash ' + _bashPath + _target + '.sh' + _var;
     exec(_command, function (error, data, getter) {
         if (error) {
             bashResult('__error__: ' + error.message);
