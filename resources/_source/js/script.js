@@ -67,4 +67,10 @@ $(document).ready(function () {
         var _target_ver = $(this).val();
         runBash('set_php', ' ' + _target_ver);
     });
+
+    $('.js-add-domain').on('click', function () {
+        var _target_domain = $('.js-add-domain-input').val();
+        _target_domain = _target_domain.replace(/[^0-9A-Za-z\-]/g, "");
+        runBash('add_domain', ' ' + _target_domain);
+    });
 });
