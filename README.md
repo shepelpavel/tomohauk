@@ -7,7 +7,7 @@
 **dirs** - /var/www/  
 **user** - shepel  
 **apache user** - shepel *(use apache2-mpm-itk)*  
-**text editor** - code
+**text editor** - xed
 
 ***for debian and child**
 

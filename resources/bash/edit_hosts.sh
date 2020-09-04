@@ -1,5 +1,5 @@
 #!/bin/bash
 
 RESULT='hosts opened in editor...'
-code /etc/hosts
+xed /etc/hosts
 echo "${RESULT}"
