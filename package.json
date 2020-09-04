@@ -3,7 +3,7 @@
     "executableName": "Tomohauk",
     "productName": "Tomohauk",
     "description": "Apache config electron",
-    "version": "0.1.1",
+    "version": "0.1.4",
     "license": "MIT",
     "author": {
         "name": "Shepel Pavel",
@@ -40,7 +40,6 @@
         "gulp-svgmin": "^2.2.0",
         "gulp-terser": "^1.4.0",
         "gulp-watch": "^5.0.1",
-        "jquery": "^3.5.1",
         "node-sass": "^4.13.0",
         "pump": "^2.0.0"
     }

@@ -1,5 +1,3 @@
-window.$ = window.jQuery = require('jquery');
-
 var {
     exec
 } = require("child_process");
@@ -7,15 +5,21 @@ var _bashPath = __dirname + '/../resources/bash/';
 
 function bashResult(msg) {
     var _res = msg.replace(/\r|\n/g, '<br>');
-    $('#terminal').append(_res);
+    document.getElementById('terminal').innerHTML = document.getElementById('terminal').innerHTML + _res;
 };
 
 function phpVerResult(msg) {
     var _ver = String(msg).replace(/\r|\n/g, '');
     if (_ver.indexOf('error') < 0) {
         console.log('_' + _ver + '_');
-        $('.js-php-v-select option').attr('selected', false);
-        $('.js-php-v-select option[data-get="' + _ver + '"]').attr('selected', true);
+        var _options = document.querySelectorAll('.js-php-v-select option');
+        for (var i = 0; i < _options.length; i++) {
+            if (_options[i].getAttribute('data-get') == _ver) {
+                _options[i].setAttribute('selected', true);
+            } else {
+                _options[i].setAttribute('selected', false);
+            }
+        }
     }
 };
 
@@ -55,26 +59,33 @@ function runBash(_target, _var = '') {
     });
 }
 
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", function (event) {
+
     getPhpVer();
 
-    $('.js-run-bash').on('click', function () {
-        var _target = $(this).attr('data-bash');
-        runBash(_target);
+    var _run_bash = document.querySelectorAll('.js-run-bash');
+    for (var i = 0; i < _run_bash.length; i++) {
+        _run_bash[i].addEventListener('click', function () {
+            var _target = this.getAttribute('data-bash');
+            runBash(_target);
+        });
+    }
+
+    var _php_v_select = document.querySelectorAll('.js-php-v-select')[0];
+    _php_v_select.addEventListener('change', function () {
+        var _target = this.value;
+        runBash('set_php', ' ' + _target);
     });
 
-    $('.js-php-v-select').on('change', function () {
-        var _target_ver = $(this).val();
-        runBash('set_php', ' ' + _target_ver);
-    });
-
-    $('.js-add-domain').on('click', function () {
-        var _target_domain = $('.js-add-domain-input').val();
-        _target_domain = _target_domain.replace(/[^0-9A-Za-z\-]/g, "");
+    var _add_domain = document.querySelectorAll('.js-add-domain')[0];
+    var _add_domain_input = document.querySelectorAll('.js-add-domain-input')[0];
+    _add_domain.addEventListener('click', function () {
+        var _target = _add_domain_input.value.replace(/[^0-9A-Za-z\-]/g, "");
         runBash('add_domain', ' ' + _target_domain);
     });
 
-    $('.js-rescan-dirs').on('click', function () {
+    var _rescan_dirs = document.querySelectorAll('.js-rescan-dirs')[0];
+    _rescan_dirs.addEventListener('click', function () {
         var u_confirm = confirm('Reconfigure hosts and sites file?');
         if (u_confirm) {
             runBash('rescan_dirs');
