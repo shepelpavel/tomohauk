@@ -3,7 +3,7 @@
     "executableName": "Tomohauk",
     "productName": "Tomohauk",
     "description": "Apache config electron",
-    "version": "0.0.8",
+    "version": "0.1.1",
     "license": "MIT",
     "author": {
         "name": "Shepel Pavel",
