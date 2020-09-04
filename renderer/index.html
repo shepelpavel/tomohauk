@@ -10,27 +10,27 @@
 </head>
 
 <body>
-    <button class="js-run-bash" data-bash="test">Button</button>
-    <button class="js-run-bash" data-bash="restart_apache">Restart apache</button>
-    <button class="js-run-bash" data-bash="edit_mysites">Edit mysites.conf</button>
-    <button class="js-run-bash" data-bash="edit_hosts">Edit hosts</button>
-    <select class="js-php-v-select" name="select">
-        <option disabled></option>
-        <option data-get="php5.6.load" value="5.6">php5.6</option>
-        <option data-get="php7.0.load" value="7.0">php7.0</option>
-        <option data-get="php7.1.load" value="7.1">php7.1</option>
-        <option data-get="php7.2.load" value="7.2">php7.2</option>
-        <option data-get="php7.3.load" value="7.3">php7.3</option>
-        <option data-get="php7.4.load" value="7.4">php7.4</option>
-    </select>
-    <input type="text" class="js-add-domain-input">
-    <button class="js-add-domain" data-bash="add_domain">Add local domain</button>
-    <button class="js-rescan-dirs" data-bash="rescan_dirs">Rescan local dirs</button>
-    <input type="text" class="js-change-owner-input">
-    <button class="js-change-owner" data-bash="change_owner">Change owner</button>
-    <button class="js-run-bash" data-bash="reset_permissions">Reset permissions</button>
-    <hr>
-    <div id="terminal"></div>
+    <div class="top">
+        <!-- <button class="js-run-bash" data-bash="test">Button</button> -->
+        <button class="js-run-bash" data-bash="restart_apache">Restart apache</button>
+        <button class="js-run-bash" data-bash="edit_mysites">Edit mysites.conf</button>
+        <button class="js-run-bash" data-bash="edit_hosts">Edit hosts</button>
+        <select class="js-php-v-select" name="select">
+            <option disabled></option>
+            <option data-get="php5.6.load" value="5.6">php5.6</option>
+            <option data-get="php7.0.load" value="7.0">php7.0</option>
+            <option data-get="php7.1.load" value="7.1">php7.1</option>
+            <option data-get="php7.2.load" value="7.2">php7.2</option>
+            <option data-get="php7.3.load" value="7.3">php7.3</option>
+            <option data-get="php7.4.load" value="7.4">php7.4</option>
+        </select>
+        <br>
+        <input type="text" class="js-add-domain-input">
+        <button class="js-add-domain" data-bash="add_domain">Add local domain</button>
+        <button class="js-rescan-dirs" data-bash="rescan_dirs">Rescan local dirs</button>
+        <hr>
+    </div>
+    <div class="terminal" id="terminal"></div>
     <script src="../resources/_assets/js/script.js"></script>
 </body>
 

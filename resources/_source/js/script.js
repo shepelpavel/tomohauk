@@ -23,12 +23,12 @@ function getPhpVer() {
     var _command = _bashPath + 'get_php_v.sh';
     exec(_command, function (error, data, getter) {
         if (error) {
-            bashResult('__error__: ' + error.message);
+            bashResult('<span class="error">__error__:&nbsp</span>' + error.message);
             console.log(error.message);
             return;
         }
         if (getter) {
-            bashResult('__getter__: ' + data);
+            bashResult('<span class="getter">__getter__:&nbsp</span>' + data);
             console.log(data);
             return;
         }
@@ -41,16 +41,16 @@ function runBash(_target, _var = '') {
     var _command = 'sudo bash ' + _bashPath + _target + '.sh' + _var;
     exec(_command, function (error, data, getter) {
         if (error) {
-            bashResult('__error__: ' + error.message);
+            bashResult('<span class="error">__error__:&nbsp</span>' + error.message);
             console.log(error.message);
             return;
         }
         if (getter) {
-            bashResult('__getter__: ' + data);
+            bashResult('<span class="getter">__getter__:&nbsp</span>' + data);
             console.log(data);
             return;
         }
-        bashResult('__out__:<br>' + data);
+        bashResult('<span class="out">__out__:&nbsp</span>' + data);
         console.log(_command);
     });
 }
@@ -79,11 +79,5 @@ $(document).ready(function () {
         if (u_confirm) {
             runBash('rescan_dirs');
         }
-    });
-
-    $('.js-change-owner').on('click', function () {
-        var _target_owner = $('.js-change-owner-input').val();
-        _target_owner = _target_owner.replace(/[^0-9A-Za-z\-]/g, "");
-        runBash('change_owner', ' ' + _target_owner);
     });
 });
