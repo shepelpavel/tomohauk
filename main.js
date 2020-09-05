@@ -9,9 +9,9 @@ function createWindow() {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
         width: 600,
-        height: 400,
+        height: 500,
         minWidth: 600,
-        minHeight: 400,
+        minHeight: 500,
         autoHideMenuBar: true,
         backgroundColor: '#262626',
         icon: './resources/icons/icon.png',
