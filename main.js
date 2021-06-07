@@ -5,9 +5,9 @@ const {
 } = require('electron')
 const path = require('path')
 const fs = require('fs');
-const {
-    spawn
-} = require('child_process')
+const exec = require('child_process').exec;
+
+/////////////// function ////////////////////
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -27,9 +27,10 @@ function createWindow() {
     win.webContents.openDevTools()
 }
 
-function runBashScript(options) {
-    console.log(options);
-}
+/////////////// function ////////////////////
+
+
+///////////////// app ///////////////////////
 
 app.whenReady().then(() => {
     createWindow()
@@ -47,7 +48,75 @@ app.on('window-all-closed', () => {
     }
 })
 
-ipcMain.on('run-bash-script-req', (event, options) => {
-    runBashScript(options)
-    event.sender.send('system-res', 'run')
+///////////////// app ///////////////////////
+
+
+////////////////// ipc //////////////////////
+
+ipcMain.on('restart_apache', (event, options) => {
+    let _exec = 'sudo service apache2 restart'
+    dir = exec(_exec, function (err, stdout, stderr) {
+        if (err) {
+            event.sender.send('system-res', 'error restart apache')
+            event.sender.send('system-res', stderr)
+        }
+        event.sender.send('system-res', 'apache restarted')
+        event.sender.send('system-res', stdout)
+    });
 });
+ipcMain.on('error_log', (event, options) => {
+    let _exec = 'xdg-open /var/log/apache2/error.log'
+    dir = exec(_exec, function (err, stdout, stderr) {
+        if (err) {
+            event.sender.send('system-res', 'error open editor')
+            event.sender.send('system-res', stderr)
+        }
+        event.sender.send('system-res', 'opening ...')
+        event.sender.send('system-res', stdout)
+    });
+});
+ipcMain.on('access_log', (event, options) => {
+    let _exec = 'xdg-open /var/log/apache2/access.log'
+    dir = exec(_exec, function (err, stdout, stderr) {
+        if (err) {
+            event.sender.send('system-res', 'error open editor')
+            event.sender.send('system-res', stderr)
+        }
+        event.sender.send('system-res', 'opening ...')
+        event.sender.send('system-res', stdout)
+    });
+});
+ipcMain.on('edit_mysites_conf', (event, options) => {
+    let _exec = 'sudo xdg-open /etc/apache2/sites-available/mysites.conf'
+    dir = exec(_exec, function (err, stdout, stderr) {
+        if (err) {
+            event.sender.send('system-res', 'error open editor')
+            event.sender.send('system-res', stderr)
+        }
+        event.sender.send('system-res', 'opening ...')
+        event.sender.send('system-res', stdout)
+    });
+});
+ipcMain.on('edit_hosts', (event, options) => {
+    let _exec = 'sudo xdg-open /etc/hosts'
+    dir = exec(_exec, function (err, stdout, stderr) {
+        if (err) {
+            event.sender.send('system-res', 'error open editor')
+            event.sender.send('system-res', stderr)
+        }
+        event.sender.send('system-res', 'opening ...')
+        event.sender.send('system-res', stdout)
+    });
+});
+ipcMain.on('show_php_version', (event, options) => {
+    let _exec = 'ls -a -1 /etc/apache2/mods-enabled/ | grep -E ^php[A-Za-z0-9]{1}.[A-Za-z0-9]{1}.load'
+    dir = exec(_exec, function (err, stdout, stderr) {
+        if (err) {
+            event.sender.send('system-res', 'error php version')
+            event.sender.send('system-res', stderr)
+        }
+        event.sender.send('system-res', stdout)
+    });
+});
+
+////////////////// ipc //////////////////////

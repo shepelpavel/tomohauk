@@ -7,11 +7,14 @@
 </head>
 
 <body style="background-color: #262626;">
-    <button id="run">Run</button>
-    <div id="result"></div>
-    <div id="app-5">
-        <p>{{ message }}</p>
-        <button v-on:click="reverseMessage">Перевернуть сообщение</button>
+    <button class="js-button" data-exec="restart_apache">Restart apache</button>
+    <button class="js-button" data-exec="error_log">error.log</button>
+    <button class="js-button" data-exec="access_log">access.log</button>
+    <button class="js-button" data-exec="edit_mysites_conf">Edit mysites.conf</button>
+    <button class="js-button" data-exec="edit_hosts">Edit hosts</button>
+    <button class="js-button" data-exec="show_php_version">Show PHP version</button>
+    <div id="terminal" class="terminal">
+        <div class="terminal__item" v-for="item in terminal_items" :key="item.time">{{ item.text }}</div>
     </div>
 </body>
 <script src="./../_assets/js/bundle.min.js"></script>

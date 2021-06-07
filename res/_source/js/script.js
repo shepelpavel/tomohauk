@@ -8,26 +8,24 @@ const fs = require('fs');
 const $ = require('./../_assets/module/jquery/jquery.min.js')
 const Vue = require('./../_assets/module/vue/vue.min.js')
 
-function runBashScript(options) {
-    ipcRenderer.send('run-bash-script-req', options)
-}
-
-ipcRenderer.on('system-res', (event, arg) => {
-    console.log(arg)
-});
-
-$('#run').on('click', function () {
-    runBashScript('options')
-});
-
-var app5 = new Vue({
-    el: '#app-5',
+let terminal = new Vue({
+    el: '#terminal',
     data: {
-        message: 'Привет, Vue.js!'
-    },
-    methods: {
-        reverseMessage: function () {
-            this.message = this.message.split('').reverse().join('')
-        }
+        terminal_items: [{
+            time: Date.now,
+            text: '... started'
+        }]
     }
 })
+
+ipcRenderer.on('system-res', (event, resp) => {
+    terminal.terminal_items.push({
+        time: Date.now,
+        text: resp
+    })
+});
+
+$('.js-button').on('click', function () {
+    let _exec = $(this).attr('data-exec')
+    ipcRenderer.send(_exec)
+});
