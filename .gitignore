@@ -1,4 +1,4 @@
 node_modules
 package-lock.json
 dist
-resources/_assets
+res/_assets
