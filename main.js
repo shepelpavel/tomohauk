@@ -61,7 +61,9 @@ ipcMain.on('restart_apache', (event, options) => {
             event.sender.send('system-res', stderr)
         }
         event.sender.send('system-res', 'apache restarted')
-        event.sender.send('system-res', stdout)
+        if (stdout) {
+            event.sender.send('system-res', stdout)
+        }
     });
 });
 ipcMain.on('error_log', (event, options) => {
@@ -72,7 +74,9 @@ ipcMain.on('error_log', (event, options) => {
             event.sender.send('system-res', stderr)
         }
         event.sender.send('system-res', 'opening ...')
-        event.sender.send('system-res', stdout)
+        if (stdout) {
+            event.sender.send('system-res', stdout)
+        }
     });
 });
 ipcMain.on('access_log', (event, options) => {
@@ -83,7 +87,9 @@ ipcMain.on('access_log', (event, options) => {
             event.sender.send('system-res', stderr)
         }
         event.sender.send('system-res', 'opening ...')
-        event.sender.send('system-res', stdout)
+        if (stdout) {
+            event.sender.send('system-res', stdout)
+        }
     });
 });
 ipcMain.on('edit_mysites_conf', (event, options) => {
@@ -94,7 +100,9 @@ ipcMain.on('edit_mysites_conf', (event, options) => {
             event.sender.send('system-res', stderr)
         }
         event.sender.send('system-res', 'opening ...')
-        event.sender.send('system-res', stdout)
+        if (stdout) {
+            event.sender.send('system-res', stdout)
+        }
     });
 });
 ipcMain.on('edit_hosts', (event, options) => {
@@ -105,7 +113,9 @@ ipcMain.on('edit_hosts', (event, options) => {
             event.sender.send('system-res', stderr)
         }
         event.sender.send('system-res', 'opening ...')
-        event.sender.send('system-res', stdout)
+        if (stdout) {
+            event.sender.send('system-res', stdout)
+        }
     });
 });
 ipcMain.on('show_php_version', (event, options) => {
@@ -115,7 +125,9 @@ ipcMain.on('show_php_version', (event, options) => {
             event.sender.send('system-res', 'error php version')
             event.sender.send('system-res', stderr)
         }
-        event.sender.send('system-res', stdout)
+        if (stdout) {
+            event.sender.send('system-res', stdout)
+        }
     });
 });
 

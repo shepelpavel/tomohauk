@@ -1,0 +1,20 @@
+.terminal {
+    position: fixed;
+    height: 100px;
+    left: 0;
+    bottom: 0;
+    color: rgba(var(--color_light), 1);
+    width: 100%;
+    padding: 8px;
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    border-top: 1px solid rgba(var(--color_black), 1);
+    background-color: rgba(var(--color_black), 0.5);
+
+    &__item {
+        text-align: left;
+    }
+}

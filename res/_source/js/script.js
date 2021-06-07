@@ -12,7 +12,7 @@ let terminal = new Vue({
     el: '#terminal',
     data: {
         terminal_items: [{
-            time: Date.now,
+            time: new Date(),
             text: '... started'
         }]
     }
@@ -20,9 +20,12 @@ let terminal = new Vue({
 
 ipcRenderer.on('system-res', (event, resp) => {
     terminal.terminal_items.push({
-        time: Date.now,
+        time: new Date(),
         text: resp
     })
+    $('#terminal').stop().animate({
+        scrollTop: $('#terminal')[0].scrollHeight
+    }, 800);
 });
 
 $('.js-button').on('click', function () {
