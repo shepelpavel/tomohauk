@@ -20,8 +20,7 @@
     "main": "main.js",
     "scripts": {
         "dev": "gulp build && electron .",
-        "build-linux": "gulp build && electron-builder --linux",
-        "build-win": "gulp build && electron-builder --win --x64"
+        "build": "gulp build && electron-builder --linux"
     },
     "devDependencies": {
         "electron": "^12.0.9",
@@ -36,17 +35,11 @@
         "gulp-sass": "^4.1.0",
         "gulp-svg-sprite": "^1.5.0",
         "gulp-svgmin": "^3.0.0",
-        "gulp-util": "^3.0.8",
-        "jquery": "^3.6.0"
+        "gulp-util": "^3.0.8"
     },
     "build": {
-        "productName": "web-tester",
-        "appId": "webtester",
-        "win": {
-            "target": [
-                "portable"
-            ]
-        },
+        "productName": "tomohauk",
+        "appId": "tomohauk",
         "linux": {
             "target": [
                 "AppImage"

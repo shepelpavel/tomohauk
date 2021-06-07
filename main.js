@@ -49,5 +49,5 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('run-bash-script-req', (event, options) => {
     runBashScript(options)
-    event.sender.send('run-bash-script-res', 'run')
+    event.sender.send('system-res', 'run')
 });
