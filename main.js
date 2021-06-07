@@ -14,7 +14,7 @@ function createWindow() {
         width: 1200,
         height: 600,
         autoHideMenuBar: true,
-        icon: __dirname + '/res/icons/icon256.png',
+        icon: __dirname + '/res/icons/icon.png',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,

@@ -38,9 +38,13 @@
         "gulp-util": "^3.0.8"
     },
     "build": {
-        "productName": "tomohauk",
+        "productName": "Tomohauk",
         "appId": "tomohauk",
         "linux": {
+            "synopsis": "Apache config electron",
+            "description": "Apache config electron",
+            "category": "Development",
+            "icon": "./res/icons/icon256.png",
             "target": [
                 "AppImage"
             ]
