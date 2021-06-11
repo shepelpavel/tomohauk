@@ -8,18 +8,56 @@
 </head>
 
 <body>
-    <button class="js-button" data-exec="restart_apache">Restart apache</button>
-    <button class="js-button" data-exec="error_log">error.log</button>
-    <button class="js-button" data-exec="access_log">access.log</button>
-    <button class="js-button" data-exec="edit_mysites_conf">Edit mysites.conf</button>
-    <button class="js-button" data-exec="edit_hosts">Edit hosts</button>
-    <button class="js-button" data-exec="show_php_version">Show PHP version</button>
+    <div id="menu" class="menu">
+        <div class="menu__button js-menu-button">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="menu__item js-menu-item" data-page="apache">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <use xlink:href="./../_assets/svg/sprite.svg#apache"></use>
+            </svg>
+            <span>Apache</span>
+        </div>
+        <div class="menu__item js-menu-item" data-page="php">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <use xlink:href="./../_assets/svg/sprite.svg#php"></use>
+            </svg>
+            <span>PHP</span>
+        </div>
+        <div class="menu__item js-menu-item" data-page="logs">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <use xlink:href="./../_assets/svg/sprite.svg#logs"></use>
+            </svg>
+            <span>Logs</span>
+        </div>
+    </div>
+    <div id="content" class="content">
+        <div class="page" data-page="apache">
+            <button class="js-button" data-exec="restart_apache">Restart apache</button>
+            <button class="js-button" data-exec="edit_mysites_conf">Edit mysites.conf</button>
+            <button class="js-button" data-exec="edit_hosts">Edit hosts</button>
+        </div>
+        <div class="page" data-page="php">
+            <button class="js-button" data-exec="show_php_version">Show PHP version</button>
+        </div>
+        <div class="page" data-page="logs">
+            <button class="js-button" data-exec="error_log">error.log</button>
+            <button class="js-button" data-exec="access_log">access.log</button>
+        </div>
+    </div>
     <div id="terminal" class="terminal">
         <div class="terminal__item" v-for="item in terminal_items" :key="item.time">
             [{{ new Date(item.time).toLocaleTimeString('ru-RU',{timeZone:'Europe/Moscow'})}}] {{ item.text }}
         </div>
     </div>
 </body>
+
+<div style="display: none;">
+    <img src="./../_assets/svg/sprite.svg">
+</div>
+
 <script src="./../_assets/js/bundle.min.js"></script>
 
 </html>

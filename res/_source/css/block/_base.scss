@@ -37,4 +37,25 @@ body {
     font-size: 10px;
     line-height: 16px;
     background-color: rgba(var(--color_dark), 1);
+    display: flex;
+}
+
+button {
+    display: flex;
+    width: 100%;
+    max-width: 160px;
+    height: 40px;
+    max-height: 40px;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgba(var(--color_black), 1);
+    border-radius: 0;
+    background-color: rgba(var(--color_black), 0.5);
+    color: rgba(var(--color_white), 1);
+    cursor: pointer;
+    transition: .3s;
+
+    &:hover {
+        background-color: rgba(var(--color_white), 0.1);
+    }
 }

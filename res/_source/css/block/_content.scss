@@ -1,0 +1,20 @@
+.content {
+    height: calc(100vh - 100px);
+    flex-grow: 1;
+    position: relative;
+
+    .page {
+        height: inherit;
+        overflow: hidden;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: .3s;
+        position: absolute;
+        width: 100%;
+        padding: 10px;
+
+        &.active {
+            transform: scaleY(1);
+        }
+    }
+}
