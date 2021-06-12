@@ -1,10 +1,6 @@
 const {
-    app,
-    BrowserWindow,
     ipcRenderer
 } = require('electron')
-const path = require('path')
-const fs = require('fs')
 const $ = require('./../_assets/module/jquery/jquery.min.js')
 const Vue = require('./../_assets/module/vue/vue.min.js')
 
@@ -30,15 +26,12 @@ var terminal = new Vue({
 var settings = new Vue({
     el: '#settings',
     data: {
-        settings_file: './../settings/settings.json',
         settings: {},
         php_ver: []
     },
     mounted: function () {
+        ipcRenderer.send('get_settings')
         ipcRenderer.send('get_php_ver')
-        $.getJSON(this.settings_file, function (json_settings) {
-            settings.settings = json_settings
-        })
     }
 })
 
@@ -53,6 +46,9 @@ ipcRenderer.on('system-res', (event, resp) => {
 })
 ipcRenderer.on('php-available', (event, resp) => {
     settings.php_ver = resp
+})
+ipcRenderer.on('settings-data', (event, resp) => {
+    settings.settings = resp
 })
 
 openPage('apache')
@@ -83,5 +79,8 @@ $('#settings input').on('input propertychange', function () {
 
 $('.js-save').on('click', function () {
     $(this).removeClass('show').addClass('hide')
+    if (settings.settings.projects_path.slice(-1) !== '/') {
+        settings.settings.projects_path = settings.settings.projects_path + '/'
+    }
     ipcRenderer.send('write_settings', settings.settings)
 })

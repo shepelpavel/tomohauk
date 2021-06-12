@@ -6,6 +6,8 @@ const {
 const path = require('path')
 const fs = require('fs');
 const exec = require('child_process').exec;
+const configDir = app.getPath('userData') + '/settings/';
+const configFile = configDir + 'settings.json';
 
 /////////////// function ////////////////////
 
@@ -24,6 +26,23 @@ function createWindow() {
             preload: path.join(__dirname, 'res/render/preload.js')
         }
     })
+
+    if (!fs.existsSync(configDir)) {
+        fs.mkdirSync(configDir);
+    }
+    if (!fs.existsSync(configFile)) {
+        var _options = {
+            projects_path: "/var/www/",
+            hosts_path: "/fetc/hosts",
+            sites_conig_path: "/etc/apache2/sites-available/mysites.conf"
+        }
+        var _json = JSON.stringify(_options)
+        fs.writeFile(configFile, _json, 'utf8', function (err, data) {
+            if (err) {
+                console.log(err);
+            }
+        });
+    }
 
     win.loadFile('res/render/index.html')
     // win.setMenu(null)
@@ -56,12 +75,13 @@ app.on('window-all-closed', () => {
 
 ////////////////// ipc //////////////////////
 
+ipcMain.on('get_settings', (event, options) => {
+    _result = JSON.parse(fs.readFileSync(configFile))
+    event.sender.send('settings-data', _result)
+});
 ipcMain.on('write_settings', (event, options) => {
-    if (options.projects_path.slice(-1) !== '/') {
-        options.projects_path = options.projects_path + '/'
-    }
     var _json = JSON.stringify(options)
-    fs.writeFile('res/settings/settings.json', _json, 'utf8', function (err, data) {
+    fs.writeFile(configFile, _json, 'utf8', function (err, data) {
         if (err) {
             event.sender.send('system-res', 'error save settings')
             event.sender.send('system-res', err)
