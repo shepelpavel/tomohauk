@@ -100,7 +100,7 @@
             [{{ new Date(item.time).toLocaleTimeString('ru-RU',{timeZone:'Europe/Moscow'})}}] {{ item.text }}
         </div>
     </div>
-    <div id="editor" class="editor hide-editor">
+    <div id="editor" class="editor" :class="display">
         <div class="editor__close js-close-editor"></div>
         <textarea name="editor" id="" cols="30" rows="10">{{text}}</textarea>
     </div>

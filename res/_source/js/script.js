@@ -38,7 +38,8 @@ var settings = new Vue({
 var editor = new Vue({
     el: '#editor',
     data: {
-        text: ''
+        text: '',
+        display: 'hide-editor'
     }
 })
 
@@ -58,7 +59,7 @@ ipcRenderer.on('settings-data', (event, resp) => {
     settings.settings = resp
 })
 ipcRenderer.on('to-editor', (event, resp) => {
-    $('.editor').removeClass('hide-editor').addClass('show-editor')
+    editor.display = 'show-editor'
     editor.text = resp
 })
 
@@ -97,5 +98,5 @@ $('.js-save').on('click', function () {
 })
 
 $('.js-close-editor').on('click', function () {
-    $('.editor').removeClass('show-editor').addClass('hide-editor')
+    editor.display = 'hide-editor'
 })
