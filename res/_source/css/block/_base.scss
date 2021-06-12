@@ -40,6 +40,7 @@ body {
     line-height: 16px;
     background-color: rgba(var(--color_dark), 1);
     display: flex;
+    overflow: hidden;
 }
 
 button {

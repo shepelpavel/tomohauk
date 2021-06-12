@@ -120,7 +120,7 @@ ipcMain.on('restart_apache', (event, options) => {
         }
     });
 });
-ipcMain.on('error_log', (event, options) => {
+ipcMain.on('open_error_log', (event, options) => {
     let _exec = 'xdg-open /var/log/apache2/error.log'
     dir = exec(_exec, function (err, stdout, stderr) {
         if (err) {
@@ -133,7 +133,19 @@ ipcMain.on('error_log', (event, options) => {
         }
     });
 });
-ipcMain.on('access_log', (event, options) => {
+ipcMain.on('show_error_log', (event, options) => {
+    fs.readFile('/var/log/apache2/error.log', 'utf8', function (err, data) {
+        if (err) {
+            event.sender.send('system-res', 'error open file /var/log/apache2/error.log')
+            event.sender.send('system-res', err)
+        }
+        event.sender.send('system-res', 'opening ...')
+        if (data) {
+            event.sender.send('to-editor', data)
+        }
+    });
+});
+ipcMain.on('open_access_log', (event, options) => {
     let _exec = 'xdg-open /var/log/apache2/access.log'
     dir = exec(_exec, function (err, stdout, stderr) {
         if (err) {
@@ -143,6 +155,18 @@ ipcMain.on('access_log', (event, options) => {
         event.sender.send('system-res', 'opening ...')
         if (stdout) {
             event.sender.send('system-res', stdout)
+        }
+    });
+});
+ipcMain.on('show_access_log', (event, options) => {
+    fs.readFile('/var/log/apache2/access.log', 'utf8', function (err, data) {
+        if (err) {
+            event.sender.send('system-res', 'error open file /var/log/apache2/error.log')
+            event.sender.send('system-res', err)
+        }
+        event.sender.send('system-res', 'opening ...')
+        if (data) {
+            event.sender.send('to-editor', data)
         }
     });
 });

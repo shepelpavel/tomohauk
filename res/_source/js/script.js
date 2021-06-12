@@ -35,6 +35,13 @@ var settings = new Vue({
     }
 })
 
+var editor = new Vue({
+    el: '#editor',
+    data: {
+        text: ''
+    }
+})
+
 ipcRenderer.on('system-res', (event, resp) => {
     terminal.terminal_items.push({
         time: new Date(),
@@ -49,6 +56,10 @@ ipcRenderer.on('php-available', (event, resp) => {
 })
 ipcRenderer.on('settings-data', (event, resp) => {
     settings.settings = resp
+})
+ipcRenderer.on('to-editor', (event, resp) => {
+    $('.editor').removeClass('hide-editor').addClass('show-editor')
+    editor.text = resp
 })
 
 openPage('apache')
@@ -83,4 +94,8 @@ $('.js-save').on('click', function () {
         settings.settings.projects_path = settings.settings.projects_path + '/'
     }
     ipcRenderer.send('write_settings', settings.settings)
+})
+
+$('.js-close-editor').on('click', function () {
+    $('.editor').removeClass('show-editor').addClass('hide-editor')
 })
