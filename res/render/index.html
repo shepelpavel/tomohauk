@@ -32,6 +32,12 @@
             </svg>
             <span>Logs</span>
         </div>
+        <div class="menu__settings js-menu-item" data-page="settings">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <use xlink:href="./../_assets/svg/sprite.svg#settings"></use>
+            </svg>
+            <span>Settings</span>
+        </div>
     </div>
     <div id="content" class="content">
         <div class="page" data-page="apache">
@@ -45,6 +51,22 @@
         <div class="page" data-page="logs">
             <button class="js-button" data-exec="error_log">error.log</button>
             <button class="js-button" data-exec="access_log">access.log</button>
+        </div>
+        <div id="settings" class="page" data-page="settings">
+            <div class="page__item">
+                <label for="hosts_path">
+                    Hosts path:
+                </label>
+                <input type="text" id="hosts_path" name="hosts_path" v-model="settings.hosts_path" />
+                <button class="js-save hide" data-save="hosts_path">Save</button>
+            </div>
+            <div class="page__item">
+                <label for="projects_path">
+                    Projects path:
+                </label>
+                <input type="text" id="projects_path" name="projects_path" v-model="settings.projects_path" />
+                <button class="js-save hide" data-save="projects_path">Save</button>
+            </div>
         </div>
     </div>
     <div id="terminal" class="terminal">

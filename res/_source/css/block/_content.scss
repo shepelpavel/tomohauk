@@ -2,6 +2,8 @@
     height: calc(100vh - 100px);
     flex-grow: 1;
     position: relative;
+    color: rgba(var(--color_light), 1);
+    font-size: 12px;
 
     .page {
         height: inherit;
@@ -15,6 +17,14 @@
 
         &.active {
             transform: scaleY(1);
+        }
+
+        &__item {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(var(--color_white), 0.1);;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
     }
 }

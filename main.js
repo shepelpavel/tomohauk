@@ -11,8 +11,10 @@ const exec = require('child_process').exec;
 
 function createWindow() {
     const win = new BrowserWindow({
-        width: 1200,
+        width: 1300,
         height: 600,
+        minWidth: 900,
+        minHeight: 600,
         autoHideMenuBar: true,
         icon: __dirname + '/res/icons/icon.png',
         webPreferences: {
@@ -53,6 +55,20 @@ app.on('window-all-closed', () => {
 
 ////////////////// ipc //////////////////////
 
+ipcMain.on('write_settings', (event, options) => {
+    var _json = JSON.stringify(options)
+    fs.writeFile('res/settings/settings.json', _json, 'utf8', function (err, data) {
+        if (err) {
+            event.sender.send('system-res', 'error save settings')
+            event.sender.send('system-res', err)
+        } else {
+            event.sender.send('system-res', 'settings saved')
+        }
+        if (data) {
+            event.sender.send('system-res', data)
+        }
+    });
+});
 ipcMain.on('restart_apache', (event, options) => {
     let _exec = 'sudo service apache2 restart'
     dir = exec(_exec, function (err, stdout, stderr) {

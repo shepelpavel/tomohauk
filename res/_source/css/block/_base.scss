@@ -59,3 +59,36 @@ button {
         background-color: rgba(var(--color_white), 0.1);
     }
 }
+
+label {
+    display: flex;
+    align-items: center;
+    width: 200px;
+}
+
+input {
+    display: flex;
+    width: 100%;
+    max-width: 200px;
+    height: 40px;
+    max-height: 40px;
+    padding: 0 10px;
+    align-items: center;
+    border: 1px solid rgba(var(--color_black), 1);
+    border-radius: 0;
+    background-color: rgba(var(--color_black), 0.5);
+    color: rgba(var(--color_white), 1);
+    transition: .3s;
+}
+
+.hide {
+    transform: scale(0);
+    transform-origin: center;
+    transition: .3s;
+}
+
+.show {
+    transform: scale(1);
+    transform-origin: center;
+    transition: .3s;
+}

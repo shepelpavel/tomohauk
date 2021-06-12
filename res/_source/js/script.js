@@ -17,13 +17,26 @@ function openPage(page) {
     }
 }
 
-let terminal = new Vue({
+var terminal = new Vue({
     el: '#terminal',
     data: {
         terminal_items: [{
             time: new Date(),
             text: '... started'
         }]
+    }
+})
+
+var settings = new Vue({
+    el: '#settings',
+    data: {
+        settings_file: './../settings/settings.json',
+        settings: {}
+    },
+    mounted: function () {
+        $.getJSON(this.settings_file, function (json_settings) {
+            settings.settings = json_settings
+        })
     }
 })
 
@@ -56,4 +69,14 @@ $('.js-menu-button').on('click', function () {
 $('.js-menu-item').on('click', function () {
     var _page = $(this).attr('data-page')
     openPage(_page)
+})
+
+$('#settings input').on('input propertychange', function () {
+    var _prop = $(this).attr('name')
+    $('button[data-save="' + _prop + '"]').removeClass('hide').addClass('show')
+})
+
+$('.js-save').on('click', function () {
+    $(this).removeClass('show').addClass('hide')
+    ipcRenderer.send('write_settings', settings.settings)
 })
