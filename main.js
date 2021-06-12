@@ -26,6 +26,7 @@ function createWindow() {
     })
 
     win.loadFile('res/render/index.html')
+    // win.setMenu(null)
     win.webContents.openDevTools()
 }
 
@@ -56,6 +57,9 @@ app.on('window-all-closed', () => {
 ////////////////// ipc //////////////////////
 
 ipcMain.on('write_settings', (event, options) => {
+    if (options.projects_path.slice(-1) !== '/') {
+        options.projects_path = options.projects_path + '/'
+    }
     var _json = JSON.stringify(options)
     fs.writeFile('res/settings/settings.json', _json, 'utf8', function (err, data) {
         if (err) {
@@ -68,6 +72,20 @@ ipcMain.on('write_settings', (event, options) => {
             event.sender.send('system-res', data)
         }
     });
+});
+ipcMain.on('get_php_ver', (event, options) => {
+    var _result = []
+    fs.readdirSync('/etc/apache2/mods-available/').forEach(function (file) {
+        if (
+            file.match(/^php/gi) &&
+            file.match(/conf$/gi)
+        ) {
+            _result.push(file.replace('php', '').replace('.conf', ''))
+        }
+    });
+    if (_result.length > 0) {
+        event.sender.send('php-available', _result)
+    }
 });
 ipcMain.on('restart_apache', (event, options) => {
     let _exec = 'sudo service apache2 restart'

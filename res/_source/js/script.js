@@ -31,9 +31,11 @@ var settings = new Vue({
     el: '#settings',
     data: {
         settings_file: './../settings/settings.json',
-        settings: {}
+        settings: {},
+        php_ver: []
     },
     mounted: function () {
+        ipcRenderer.send('get_php_ver')
         $.getJSON(this.settings_file, function (json_settings) {
             settings.settings = json_settings
         })
@@ -48,6 +50,9 @@ ipcRenderer.on('system-res', (event, resp) => {
     $('#terminal').stop().animate({
         scrollTop: $('#terminal')[0].scrollHeight
     }, 800)
+})
+ipcRenderer.on('php-available', (event, resp) => {
+    settings.php_ver = resp
 })
 
 openPage('apache')

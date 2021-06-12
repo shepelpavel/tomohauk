@@ -55,10 +55,17 @@
         <div id="settings" class="page" data-page="settings">
             <div class="page__item">
                 <label for="hosts_path">
-                    Hosts path:
+                    Hosts file:
                 </label>
                 <input type="text" id="hosts_path" name="hosts_path" v-model="settings.hosts_path" />
                 <button class="js-save hide" data-save="hosts_path">Save</button>
+            </div>
+            <div class="page__item">
+                <label for="sites_conig_path">
+                    Sites config file:
+                </label>
+                <input type="text" id="sites_conig_path" name="sites_conig_path" v-model="settings.sites_conig_path" />
+                <button class="js-save hide" data-save="sites_conig_path">Save</button>
             </div>
             <div class="page__item">
                 <label for="projects_path">
@@ -66,6 +73,14 @@
                 </label>
                 <input type="text" id="projects_path" name="projects_path" v-model="settings.projects_path" />
                 <button class="js-save hide" data-save="projects_path">Save</button>
+            </div>
+            <div class="page__item">
+                <label>
+                    PHP versions:
+                </label>
+                <div class="php__available">
+                    <div class="php__available_item" v-for="ver in php_ver">{{ver}}</div>
+                </div>
             </div>
         </div>
     </div>

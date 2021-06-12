@@ -24,16 +24,18 @@
 
 * {
     box-sizing: border-box;
+    font-family: monospace, sans-serif;
 }
 
 html {
+    font-family: monospace, sans-serif;
     background-color: rgba(var(--color_dark), 1);
 }
 
 body {
+    font-family: monospace, sans-serif;
     font-size: 26px;
     text-align: center;
-    font-family: monospace, sans-serif;
     font-size: 10px;
     line-height: 16px;
     background-color: rgba(var(--color_dark), 1);
@@ -41,6 +43,8 @@ body {
 }
 
 button {
+    font-family: monospace, sans-serif;
+    font-size: 12px;
     display: flex;
     width: 100%;
     max-width: 160px;
@@ -61,12 +65,15 @@ button {
 }
 
 label {
+    font-family: monospace, sans-serif;
     display: flex;
     align-items: center;
     width: 200px;
 }
 
 input {
+    font-family: monospace, sans-serif;
+    font-size: 9px;
     display: flex;
     width: 100%;
     max-width: 200px;
