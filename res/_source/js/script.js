@@ -19,7 +19,17 @@ var terminal = new Vue({
         terminal_items: [{
             time: new Date(),
             text: '... started'
-        }]
+        }],
+        text: '[' + new Date().toLocaleTimeString('ru-RU', {
+            timeZone: 'Europe/Moscow'
+        }) + '] ... started\n'
+    },
+    watch: {
+        text: function () {
+            $('#terminal textarea').stop().animate({
+                scrollTop: $('#terminal textarea')[0].scrollHeight * 2
+            }, 800)
+        }
     }
 })
 
@@ -31,7 +41,6 @@ var settings = new Vue({
     },
     mounted: function () {
         ipcRenderer.send('get_settings')
-        ipcRenderer.send('get_php_ver')
     }
 })
 
@@ -43,17 +52,45 @@ var editor = new Vue({
     }
 })
 
+var php = new Vue({
+    el: '#php',
+    data: {
+        php_ver: [],
+        php_cur: ''
+    },
+    mounted: function () {
+        ipcRenderer.send('get_php_ver')
+        ipcRenderer.send('get_cur_php_ver')
+    },
+    methods: {
+        phpCurrent: function (php_cur, ver) {
+            if (php_cur == ver) {
+                return 'enabled'
+            }
+        },
+        setPhpVer: function (event) {
+            if (!event.target.classList.contains('enabled')) {
+                var _en_ver = $(event.target).text()
+                var _data = {
+                    en_ver: _en_ver,
+                    all_ver: this.php_ver
+                }
+                ipcRenderer.send('set_php_ver', _data)
+            }
+        }
+    }
+})
+
 ipcRenderer.on('system-res', (event, resp) => {
-    terminal.terminal_items.push({
-        time: new Date(),
-        text: resp
-    })
-    $('#terminal').stop().animate({
-        scrollTop: $('#terminal')[0].scrollHeight
-    }, 800)
+    terminal.text += '[' + new Date().toLocaleTimeString('ru-RU', {
+        timeZone: 'Europe/Moscow'
+    }) + '] ' + resp + '\n'
 })
 ipcRenderer.on('php-available', (event, resp) => {
-    settings.php_ver = resp
+    php.php_ver = resp
+})
+ipcRenderer.on('php-current', (event, resp) => {
+    php.php_cur = resp
 })
 ipcRenderer.on('settings-data', (event, resp) => {
     settings.settings = resp

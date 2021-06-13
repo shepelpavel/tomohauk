@@ -107,6 +107,42 @@ ipcMain.on('get_php_ver', (event, options) => {
         event.sender.send('php-available', _result)
     }
 });
+ipcMain.on('get_cur_php_ver', (event, options) => {
+    var _result = ''
+    fs.readdirSync('/etc/apache2/mods-enabled/').forEach(function (file) {
+        if (
+            file.match(/^php/gi) &&
+            file.match(/conf$/gi)
+        ) {
+            _result += file.replace('php', '').replace('.conf', '')
+        }
+    });
+    if (_result.length > 0) {
+        event.sender.send('php-current', _result)
+    }
+});
+ipcMain.on('set_php_ver', (event, options) => {
+    if (options.en_ver.length > 0 &&
+        options.all_ver.length > 0
+    ) {
+        var _arr = options.all_ver
+        var _exec = ''
+        for (var _i = 0; _arr.length > _i; _i++) {
+            _exec += ' sudo a2dismod php' + _arr[_i] + ' &&'
+        }
+        _exec += ' sudo a2enmod php' + options.en_ver + ' && sudo service apache2 restart'
+        dir = exec(_exec, function (err, stdout, stderr) {
+            if (err) {
+                event.sender.send('system-res', 'error change php version')
+                event.sender.send('system-res', stderr)
+            }
+            event.sender.send('system-res', 'change php version ...')
+            if (stdout) {
+                event.sender.send('system-res', stdout)
+            }
+        });
+    }
+});
 ipcMain.on('restart_apache', (event, options) => {
     let _exec = 'sudo service apache2 restart'
     dir = exec(_exec, function (err, stdout, stderr) {

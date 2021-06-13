@@ -51,7 +51,15 @@
             <button class="js-button" data-exec="edit_mysites_conf">Edit mysites.conf</button>
             <button class="js-button" data-exec="edit_hosts">Edit hosts</button>
         </div>
-        <div class="page" data-page="php">
+        <div id="php" class="page" data-page="php">
+            <div class="page__item">
+                <label>
+                    PHP versions:
+                </label>
+                <div class="php__available">
+                    <div class="php__available_item" v-for="ver in php_ver" :class="phpCurrent(php_cur, ver)" @click="setPhpVer">{{ver}}</div>
+                </div>
+            </div>
             <button class="js-button" data-exec="show_php_version">Show PHP version</button>
         </div>
         <div class="page" data-page="git">
@@ -85,20 +93,10 @@
                 <input type="text" id="projects_path" name="projects_path" v-model="settings.projects_path" />
                 <button class="js-save hide" data-save="projects_path">Save</button>
             </div>
-            <div class="page__item">
-                <label>
-                    PHP versions:
-                </label>
-                <div class="php__available">
-                    <div class="php__available_item" v-for="ver in php_ver">{{ver}}</div>
-                </div>
-            </div>
         </div>
     </div>
     <div id="terminal" class="terminal">
-        <div class="terminal__item" v-for="item in terminal_items" :key="item.time">
-            [{{ new Date(item.time).toLocaleTimeString('ru-RU',{timeZone:'Europe/Moscow'})}}] {{ item.text }}
-        </div>
+        <textarea class="terminal__item">{{ text }}</textarea>
     </div>
     <div id="editor" class="editor" :class="display">
         <div class="editor__close js-close-editor"></div>
