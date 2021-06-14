@@ -13,6 +13,12 @@ function openPage(page) {
     }
 }
 
+var loader = new Vue({
+    el: '#loader',
+    data: {
+        show: false
+    }
+})
 var terminal = new Vue({
     el: '#terminal',
     data: {
@@ -51,6 +57,16 @@ var editor = new Vue({
         text: '',
         display: 'hide-editor',
         save_btn: false
+    },
+    methods: {
+        saveFromEditor: function () {
+            loader.show = true
+            var _data = {
+                file: this.file,
+                text: this.text
+            }
+            ipcRenderer.send('save_file', _data)
+        }
     }
 })
 
@@ -72,6 +88,7 @@ var php = new Vue({
         },
         setPhpVer: function (event) {
             if (!event.target.classList.contains('enabled')) {
+                loader.show = true
                 var _en_ver = $(event.target).text()
                 var _data = {
                     en_ver: _en_ver,
@@ -94,6 +111,7 @@ var git = new Vue({
     methods: {
         gitClone: function () {
             if (this.git_clone.replace(/\s/g, '').length > 0) {
+                loader.show = true
                 $('button[data-show="git_clone"]').removeClass('show').addClass('hide').prop('disabled', true)
                 var _data = {
                     repo: this.git_clone.replace(/\s/g, ''),
@@ -103,6 +121,7 @@ var git = new Vue({
             }
         },
         checkPushed: function () {
+            loader.show = true
             this.need_push = ''
             ipcRenderer.send('check_pushed')
         }
@@ -122,6 +141,9 @@ var git = new Vue({
     }
 })
 
+ipcRenderer.on('loader-hide', (event, resp) => {
+    loader.show = false
+})
 ipcRenderer.on('system-res', (event, resp) => {
     terminal.text += '[' + new Date().toLocaleTimeString('ru-RU', {
         timeZone: 'Europe/Moscow'
@@ -154,6 +176,7 @@ ipcRenderer.on('git-status-push', (event, resp) => {
 openPage('apache')
 
 $('.js-button').on('click', function () {
+    loader.show = true
     var _exec = $(this).attr('data-exec')
     ipcRenderer.send(_exec)
 })
@@ -194,6 +217,7 @@ $('input').on('input propertychange', function () {
 })
 
 $('.js-save').on('click', function () {
+    loader.show = true
     $(this).removeClass('show').addClass('hide')
     if (settings.settings.projects_path.slice(-1) !== '/') {
         settings.settings.projects_path = settings.settings.projects_path + '/'
@@ -204,12 +228,4 @@ $('.js-save').on('click', function () {
 $('.js-close-editor').on('click', function () {
     editor.display = 'hide-editor'
     editor.save_btn = false
-})
-
-$('.js-save-editor').on('click', function () {
-    var _data = {
-        file: editor.file,
-        text: editor.text
-    }
-    ipcRenderer.send('save_file', _data)
 })

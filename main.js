@@ -91,6 +91,7 @@ ipcMain.on('write_settings', (event, options) => {
         if (data) {
             event.sender.send('system-res', data)
         }
+        event.sender.send('loader-hide')
     })
 })
 ipcMain.on('get_php_ver', (event, options) => {
@@ -126,6 +127,7 @@ ipcMain.on('save_file', (event, options) => {
         if (err) {
             event.sender.send('system-res', 'error save tmp file')
             event.sender.send('system-res', err)
+            event.sender.send('loader-hide')
         } else {
             var _exec = 'sudo mv ' + configDir + 'tmp ' + options.file + ' && sudo chown -R root:root ' + options.file + ' && sudo chmod 644 ' + options.file + ' && sudo service apache2 restart'
             dir = exec(_exec, function (err, stdout, stderr) {
@@ -136,6 +138,7 @@ ipcMain.on('save_file', (event, options) => {
                     event.sender.send('system-res', stdout)
                     event.sender.send('system-res', 'file saved')
                 }
+                event.sender.send('loader-hide')
             })
         }
     })
@@ -162,6 +165,7 @@ ipcMain.on('set_php_ver', (event, options) => {
                 event.sender.send('php-current', options.en_ver)
                 event.sender.send('system-res', 'apache restarted ...')
             }
+            event.sender.send('loader-hide')
         })
     }
 })
@@ -177,6 +181,7 @@ ipcMain.on('restart_apache', (event, options) => {
             }
             event.sender.send('system-res', 'apache restarted')
         }
+        event.sender.send('loader-hide')
     })
 })
 ipcMain.on('show_error_log', (event, options) => {
@@ -188,6 +193,7 @@ ipcMain.on('show_error_log', (event, options) => {
         } else if (data) {
             event.sender.send('to-editor', data)
         }
+        event.sender.send('loader-hide')
     })
 })
 ipcMain.on('show_access_log', (event, options) => {
@@ -199,6 +205,7 @@ ipcMain.on('show_access_log', (event, options) => {
         } else if (data) {
             event.sender.send('to-editor', data)
         }
+        event.sender.send('loader-hide')
     })
 })
 ipcMain.on('edit_mysites_conf', (event, options) => {
@@ -213,9 +220,11 @@ ipcMain.on('edit_mysites_conf', (event, options) => {
                 } else if (data) {
                     event.sender.send('to-editor', data)
                 }
+                event.sender.send('loader-hide')
             })
         } else {
             event.sender.send('system-res', 'error open config')
+            event.sender.send('loader-hide')
         }
     })
 })
@@ -231,9 +240,11 @@ ipcMain.on('edit_hosts', (event, options) => {
                 } else if (data) {
                     event.sender.send('to-editor', data)
                 }
+                event.sender.send('loader-hide')
             })
         } else {
             event.sender.send('system-res', 'error open config')
+            event.sender.send('loader-hide')
         }
     })
 })
@@ -258,9 +269,11 @@ ipcMain.on('git_clone', (event, options) => {
                     }
                     event.sender.send('system-res', 'repo ' + _name + ' clone success')
                 }
+                event.sender.send('loader-hide')
             })
         } else {
             event.sender.send('system-res', 'error open config')
+            event.sender.send('loader-hide')
         }
     })
 })
@@ -268,6 +281,7 @@ ipcMain.on('check_pushed', (event, options) => {
     fs.readFile(configFile, 'utf8', function (err, data) {
         var config = JSON.parse(data)
         if (config) {
+            var _all_ok = true
             fs.readdir(config.projects_path, (err, directories) => {
                 directories.forEach(function (directoire) {
                     if (directoire.charAt(0) !== '.' && fs.existsSync(config.projects_path + directoire + '/.git/')) {
@@ -280,15 +294,22 @@ ipcMain.on('check_pushed', (event, options) => {
                             } else {
                                 if (stdout) {
                                     event.sender.send('system-res', stdout)
+                                    _all_ok = false
                                     event.sender.send('git-status-push', '_______________ ' + directoire + ' _______________\n' + stdout)
                                 }
                             }
                         })
                     }
-                });
-            });
+                })
+                event.sender.send('loader-hide')
+                if (_all_ok) {
+                    event.sender.send('git-status-push', 'all projects pushed')
+                    event.sender.send('system-res', 'all projects pushed')
+                }
+            })
         } else {
             event.sender.send('system-res', 'error open config')
+            event.sender.send('loader-hide')
         }
     })
 })

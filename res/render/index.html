@@ -141,8 +141,9 @@
     <div id="editor" class="editor" :class="display">
         <div class="editor__close js-close-editor"></div>
         <textarea name="editor" id="" cols="30" rows="10" v-model="text"></textarea>
-        <button class="editor__save js-save-editor" v-if="save_btn">Save</button>
+        <button class="editor__save" v-if="save_btn" @click="saveFromEditor">Save</button>
     </div>
+    <div id="loader" class="loader" v-if="show"></div>
 </body>
 
 <div style="display: none;">
