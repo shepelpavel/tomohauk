@@ -283,6 +283,7 @@ ipcMain.on('check_pushed', (event, options) => {
         if (config) {
             fs.readdir(config.projects_path, (err, directories) => {
                 var _checked = []
+                var _need_push = []
                 directories.forEach(function (directoire, idx) {
                     _checked.push(directoire)
                     if (directoire.charAt(0) !== '.' && fs.existsSync(config.projects_path + directoire + '/.git/')) {
@@ -294,6 +295,7 @@ ipcMain.on('check_pushed', (event, options) => {
                                 event.sender.send('system-res', stderr)
                             } else {
                                 if (stdout) {
+                                    _need_push.push(directoire)
                                     event.sender.send('system-res', stdout)
                                     event.sender.send('git-status-push', '_______________ ' + directoire + ' _______________\n' + stdout)
                                 }
@@ -301,8 +303,8 @@ ipcMain.on('check_pushed', (event, options) => {
                         })
                     }
                 })
-                event.sender.send('system-res', 'checked ' + _checked.length + ' folders')
-                event.sender.send('git-status-push', 'checked ' + _checked.length + ' folders\n')
+                event.sender.send('system-res', 'checked ' + _checked.length + ' folders\nneed push - ' + _need_push.length)
+                event.sender.send('git-status-push', 'checked ' + _checked.length + ' folders\nneed push - ' + _need_push.length)
                 event.sender.send('loader-hide')
             })
         } else {
