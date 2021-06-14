@@ -3,7 +3,7 @@
     right: 0;
     top: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 100px);
     background: rgba(var(--color_black), 0.8);
     transition: .3s;
     display: flex;
@@ -53,10 +53,11 @@
 
     &__save {
         position: absolute;
-        left: 1px;
-        bottom: 1px;
-        width: 59px;
+        left: 0;
+        bottom: 0;
+        width: 60px;
         background-color: rgba(var(--color_gray), 1);
+        border: rgba(var(--color_gray), 1);
     }
 
     &.hide-editor {

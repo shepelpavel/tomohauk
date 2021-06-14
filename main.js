@@ -237,5 +237,32 @@ ipcMain.on('edit_hosts', (event, options) => {
         }
     })
 })
+ipcMain.on('git_clone', (event, options) => {
+    var _name = options.repo_name
+    if (!_name.length > 0) {
+        _name = options.repo.replace(/\s/g, '').split('/')[1].split('.')[0]
+    }
+    event.sender.send('system-res', 'clone ' + _name + '...')
+    fs.readFile(configFile, 'utf8', function (err, data) {
+        var config = JSON.parse(data)
+        if (config && options.repo.length > 0) {
+            var _exec = 'git clone ' + options.repo + ' ' + config.projects_path + _name
+            dir = exec(_exec, function (err, stdout, stderr) {
+                if (err) {
+                    event.sender.send('system-res', 'error clone repo')
+                    event.sender.send('system-res', stderr)
+                } else {
+                    event.sender.send('clear-inputs-git', ['git_clone', 'repo_name'])
+                    if (stdout) {
+                        event.sender.send('system-res', stdout)
+                    }
+                    event.sender.send('system-res', 'repo ' + _name + ' clone success')
+                }
+            })
+        } else {
+            event.sender.send('system-res', 'error open config')
+        }
+    })
+})
 
 ////////////////// ipc //////////////////////

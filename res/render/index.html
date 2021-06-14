@@ -76,8 +76,19 @@
                 </div>
             </div>
         </div>
-        <div class="page" data-page="git">
-            <button class="js-button" data-exec="">git...</button>
+        <div id="git" class="page" data-page="git">
+            <div class="page__item">
+                <label for="git_clone">
+                    Git clone:
+                </label>
+                <input type="text" id="git_clone" name="git_clone" v-model="git_clone" />
+                <button class="hide" data-show="git_clone" @click="gitClone" disabled>Clone</button>
+                <div class="limiter"></div>
+                <label for="git_clone">
+                    Repo name:
+                </label>
+                <input type="text" id="repo_name" name="repo_name" v-model="repo_name" />
+            </div>
         </div>
         <div class="page" data-page="logs">
             <div class="page__item">
@@ -99,21 +110,21 @@
                     Hosts file:
                 </label>
                 <input type="text" id="hosts_path" name="hosts_path" v-model="settings.hosts_path" />
-                <button class="js-save hide" data-save="hosts_path">Save</button>
+                <button class="js-save hide" data-save="hosts_path" data-show="hosts_path">Save</button>
             </div>
             <div class="page__item">
                 <label for="sites_conig_path">
                     Sites config file:
                 </label>
                 <input type="text" id="sites_conig_path" name="sites_conig_path" v-model="settings.sites_conig_path" />
-                <button class="js-save hide" data-save="sites_conig_path">Save</button>
+                <button class="js-save hide" data-save="sites_conig_path" data-show="sites_conig_path">Save</button>
             </div>
             <div class="page__item">
                 <label for="projects_path">
                     Projects path:
                 </label>
                 <input type="text" id="projects_path" name="projects_path" v-model="settings.projects_path" />
-                <button class="js-save hide" data-save="projects_path">Save</button>
+                <button class="js-save hide" data-save="projects_path" data-show="projects_path">Save</button>
             </div>
         </div>
     </div>

@@ -83,6 +83,39 @@ var php = new Vue({
     }
 })
 
+var git = new Vue({
+    el: '#git',
+    data: {
+        git_clone: '',
+        repo_name: ''
+    },
+    methods: {
+        gitClone: function () {
+            if (this.git_clone.replace(/\s/g, '').length > 0) {
+                $('button[data-show="git_clone"]').removeClass('show').addClass('hide').prop('disabled', true)
+                var _data = {
+                    repo: this.git_clone.replace(/\s/g, ''),
+                    repo_name: this.repo_name ? this.repo_name : this.git_clone.replace(/\s/g, '').split('/')[1].split('.')[0]
+                }
+                ipcRenderer.send('git_clone', _data)
+            }
+        }
+    },
+    watch: {
+        git_clone: function () {
+            if (
+                this.git_clone.indexOf('/') !== -1 &&
+                this.git_clone.indexOf('.') !== -1
+            ) {
+                var _repo_name = this.git_clone.split('/')[1].split('.')[0]
+                if (_repo_name) {
+                    this.repo_name = _repo_name
+                }
+            }
+        }
+    }
+})
+
 ipcRenderer.on('system-res', (event, resp) => {
     terminal.text += '[' + new Date().toLocaleTimeString('ru-RU', {
         timeZone: 'Europe/Moscow'
@@ -100,6 +133,12 @@ ipcRenderer.on('settings-data', (event, resp) => {
 ipcRenderer.on('to-editor', (event, resp) => {
     editor.display = 'show-editor'
     editor.text = resp
+})
+ipcRenderer.on('clear-inputs-git', (event, resp) => {
+    for (var _i = 0; resp.length > _i; _i++) {
+        $('input[name="' + resp[_i] + '"]').val('')
+        git[resp[_i]] = ''
+    }
 })
 
 openPage('apache')
@@ -133,9 +172,15 @@ $('.js-menu-item').on('click', function () {
     openPage(_page)
 })
 
-$('#settings input').on('input propertychange', function () {
+$('input').on('input propertychange', function () {
     var _prop = $(this).attr('name')
-    $('button[data-save="' + _prop + '"]').removeClass('hide').addClass('show')
+    if (_prop) {
+        if ($(this).val().replace(/\s/g, '').length > 0) {
+            $('button[data-show="' + _prop + '"]').removeClass('hide').addClass('show').prop('disabled', false)
+        } else {
+            $('button[data-show="' + _prop + '"]').removeClass('show').addClass('hide').prop('disabled', true)
+        }
+    }
 })
 
 $('.js-save').on('click', function () {
