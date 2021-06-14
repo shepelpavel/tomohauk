@@ -264,5 +264,33 @@ ipcMain.on('git_clone', (event, options) => {
         }
     })
 })
+ipcMain.on('check_pushed', (event, options) => {
+    fs.readFile(configFile, 'utf8', function (err, data) {
+        var config = JSON.parse(data)
+        if (config) {
+            fs.readdir(config.projects_path, (err, directories) => {
+                directories.forEach(function (directoire) {
+                    if (directoire.charAt(0) !== '.' && fs.existsSync(config.projects_path + directoire + '/.git/')) {
+                        var _exec = 'cd ' + config.projects_path + directoire + '/ && git cherry -v'
+                        dir = exec(_exec, function (err, stdout, stderr) {
+                            if (err) {
+                                event.sender.send('system-res', 'error get git state')
+                                event.sender.send('system-res', directoire)
+                                event.sender.send('system-res', stderr)
+                            } else {
+                                if (stdout) {
+                                    event.sender.send('system-res', stdout)
+                                    event.sender.send('git-status-push', '_______________ ' + directoire + ' _______________\n' + stdout)
+                                }
+                            }
+                        })
+                    }
+                });
+            });
+        } else {
+            event.sender.send('system-res', 'error open config')
+        }
+    })
+})
 
 ////////////////// ipc //////////////////////

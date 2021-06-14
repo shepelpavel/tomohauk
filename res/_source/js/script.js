@@ -87,7 +87,9 @@ var git = new Vue({
     el: '#git',
     data: {
         git_clone: '',
-        repo_name: ''
+        repo_name: '',
+        need_push: '',
+        show_push: false
     },
     methods: {
         gitClone: function () {
@@ -99,6 +101,10 @@ var git = new Vue({
                 }
                 ipcRenderer.send('git_clone', _data)
             }
+        },
+        checkPushed: function () {
+            this.need_push = ''
+            ipcRenderer.send('check_pushed')
         }
     },
     watch: {
@@ -139,6 +145,10 @@ ipcRenderer.on('clear-inputs-git', (event, resp) => {
         $('input[name="' + resp[_i] + '"]').val('')
         git[resp[_i]] = ''
     }
+})
+ipcRenderer.on('git-status-push', (event, resp) => {
+    git.need_push += resp + '\n'
+    git.show_push = true
 })
 
 openPage('apache')

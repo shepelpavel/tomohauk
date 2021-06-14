@@ -89,6 +89,13 @@
                 </label>
                 <input type="text" id="repo_name" name="repo_name" v-model="repo_name" />
             </div>
+            <div class="page__item">
+                <label for="git_clone">
+                    Check pushed:
+                </label>
+                <button @click="checkPushed">Check</button>
+                <textarea v-if="show_push" name="need_push" id="need_push">{{need_push}}</textarea>
+            </div>
         </div>
         <div class="page" data-page="logs">
             <div class="page__item">
