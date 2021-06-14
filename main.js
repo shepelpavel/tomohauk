@@ -13,7 +13,7 @@ const configFile = configDir + 'settings.json'
 
 function createWindow() {
     const win = new BrowserWindow({
-        width: 1300,
+        width: 900,
         height: 600,
         minWidth: 900,
         minHeight: 600,
@@ -45,8 +45,8 @@ function createWindow() {
     }
 
     win.loadFile('res/render/index.html')
-    // win.setMenu(null)
-    win.webContents.openDevTools()
+    win.setMenu(null)
+    // win.webContents.openDevTools()
 }
 
 /////////////// function ////////////////////
