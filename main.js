@@ -4,10 +4,10 @@ const {
     ipcMain
 } = require('electron')
 const path = require('path')
-const fs = require('fs');
-const exec = require('child_process').exec;
-const configDir = app.getPath('userData') + '/settings/';
-const configFile = configDir + 'settings.json';
+const fs = require('fs')
+const exec = require('child_process').exec
+const configDir = app.getPath('userData') + '/settings/'
+const configFile = configDir + 'settings.json'
 
 /////////////// function ////////////////////
 
@@ -28,7 +28,7 @@ function createWindow() {
     })
 
     if (!fs.existsSync(configDir)) {
-        fs.mkdirSync(configDir);
+        fs.mkdirSync(configDir)
     }
     if (!fs.existsSync(configFile)) {
         var _options = {
@@ -39,9 +39,9 @@ function createWindow() {
         var _json = JSON.stringify(_options)
         fs.writeFile(configFile, _json, 'utf8', function (err, data) {
             if (err) {
-                console.log(err);
+                console.log(err)
             }
-        });
+        })
     }
 
     win.loadFile('res/render/index.html')
@@ -78,7 +78,7 @@ app.on('window-all-closed', () => {
 ipcMain.on('get_settings', (event, options) => {
     _result = JSON.parse(fs.readFileSync(configFile))
     event.sender.send('settings-data', _result)
-});
+})
 ipcMain.on('write_settings', (event, options) => {
     var _json = JSON.stringify(options)
     fs.writeFile(configFile, _json, 'utf8', function (err, data) {
@@ -91,8 +91,8 @@ ipcMain.on('write_settings', (event, options) => {
         if (data) {
             event.sender.send('system-res', data)
         }
-    });
-});
+    })
+})
 ipcMain.on('get_php_ver', (event, options) => {
     var _result = []
     fs.readdirSync('/etc/apache2/mods-available/').forEach(function (file) {
@@ -102,11 +102,11 @@ ipcMain.on('get_php_ver', (event, options) => {
         ) {
             _result.push(file.replace('php', '').replace('.conf', ''))
         }
-    });
+    })
     if (_result.length > 0) {
         event.sender.send('php-available', _result)
     }
-});
+})
 ipcMain.on('get_cur_php_ver', (event, options) => {
     var _result = ''
     fs.readdirSync('/etc/apache2/mods-enabled/').forEach(function (file) {
@@ -116,30 +116,30 @@ ipcMain.on('get_cur_php_ver', (event, options) => {
         ) {
             _result += file.replace('php', '').replace('.conf', '')
         }
-    });
+    })
     if (_result.length > 0) {
         event.sender.send('php-current', _result)
     }
-});
+})
 ipcMain.on('save_file', (event, options) => {
     fs.writeFile(configDir + 'tmp', options.text, 'utf8', function (err, data) {
         if (err) {
             event.sender.send('system-res', 'error save tmp file')
             event.sender.send('system-res', err)
         } else {
-            let _exec = 'sudo mv ' + configDir + 'tmp ' + options.file + ' && sudo chown -R root:root ' + options.file + ' && sudo chmod 644 ' + options.file + ' && sudo service apache2 restart'
+            var _exec = 'sudo mv ' + configDir + 'tmp ' + options.file + ' && sudo chown -R root:root ' + options.file + ' && sudo chmod 644 ' + options.file + ' && sudo service apache2 restart'
             dir = exec(_exec, function (err, stdout, stderr) {
                 if (err) {
-                    event.sender.send('system-res', 'error saved file')
+                    event.sender.send('system-res', 'error save file')
                     event.sender.send('system-res', stderr)
                 } else {
                     event.sender.send('system-res', stdout)
                     event.sender.send('system-res', 'file saved')
                 }
-            });
+            })
         }
-    });
-});
+    })
+})
 ipcMain.on('set_php_ver', (event, options) => {
     if (options.en_ver.length > 0 &&
         options.all_ver.length > 0
@@ -151,95 +151,91 @@ ipcMain.on('set_php_ver', (event, options) => {
         }
         _exec += ' sudo a2enmod php' + options.en_ver + ' && sudo service apache2 restart'
         dir = exec(_exec, function (err, stdout, stderr) {
+            event.sender.send('system-res', 'change php version ...')
             if (err) {
                 event.sender.send('system-res', 'error change php version')
                 event.sender.send('system-res', stderr)
+            } else {
+                if (stdout) {
+                    event.sender.send('system-res', stdout)
+                }
+                event.sender.send('php-current', options.en_ver)
+                event.sender.send('system-res', 'apache restarted ...')
             }
-            event.sender.send('system-res', 'change php version ...')
-            if (stdout) {
-                event.sender.send('system-res', stdout)
-            }
-            event.sender.send('system-res', 'apache restarted ...')
-            event.sender.send('php-current', options.en_ver)
-        });
+        })
     }
-});
+})
 ipcMain.on('restart_apache', (event, options) => {
-    let _exec = 'sudo service apache2 restart'
+    var _exec = 'sudo service apache2 restart'
     dir = exec(_exec, function (err, stdout, stderr) {
         if (err) {
             event.sender.send('system-res', 'error restart apache')
             event.sender.send('system-res', stderr)
+        } else {
+            if (stdout) {
+                event.sender.send('system-res', stdout)
+            }
+            event.sender.send('system-res', 'apache restarted')
         }
-        event.sender.send('system-res', 'apache restarted')
-        if (stdout) {
-            event.sender.send('system-res', stdout)
-        }
-    });
-});
+    })
+})
 ipcMain.on('show_error_log', (event, options) => {
     fs.readFile('/var/log/apache2/error.log', 'utf8', function (err, data) {
+        event.sender.send('system-res', 'opening ...')
         if (err) {
             event.sender.send('system-res', 'error open file /var/log/apache2/error.log')
             event.sender.send('system-res', err)
-        }
-        event.sender.send('system-res', 'opening ...')
-        if (data) {
+        } else if (data) {
             event.sender.send('to-editor', data)
         }
-    });
-});
+    })
+})
 ipcMain.on('show_access_log', (event, options) => {
     fs.readFile('/var/log/apache2/access.log', 'utf8', function (err, data) {
+        event.sender.send('system-res', 'opening ...')
         if (err) {
             event.sender.send('system-res', 'error open file /var/log/apache2/error.log')
             event.sender.send('system-res', err)
-        }
-        event.sender.send('system-res', 'opening ...')
-        if (data) {
+        } else if (data) {
             event.sender.send('to-editor', data)
         }
-    });
-});
+    })
+})
 ipcMain.on('edit_mysites_conf', (event, options) => {
+    event.sender.send('system-res', 'opening ...')
     fs.readFile(configFile, 'utf8', function (err, data) {
         var config = JSON.parse(data)
-        fs.readFile(config.sites_conig_path, 'utf8', function (err, data) {
-            event.sender.send('system-res', 'opening ...')
-            if (err) {
-                event.sender.send('system-res', 'error open file ' + config.sites_conig_path)
-                event.sender.send('system-res', err)
-            } else if (data) {
-                event.sender.send('to-editor', data)
-            }
-        });
-    });
-});
+        if (config) {
+            fs.readFile(config.sites_conig_path, 'utf8', function (err, data) {
+                if (err) {
+                    event.sender.send('system-res', 'error open file ' + config.sites_conig_path)
+                    event.sender.send('system-res', err)
+                } else if (data) {
+                    event.sender.send('to-editor', data)
+                }
+            })
+        } else {
+            event.sender.send('system-res', 'error open config')
+        }
+    })
+})
 ipcMain.on('edit_hosts', (event, options) => {
+    event.sender.send('system-res', 'opening ...')
     fs.readFile(configFile, 'utf8', function (err, data) {
         var config = JSON.parse(data)
-        fs.readFile(config.hosts_path, 'utf8', function (err, data) {
-            event.sender.send('system-res', 'opening ...')
-            if (err) {
-                event.sender.send('system-res', 'error open file ' + config.hosts_path)
-                event.sender.send('system-res', err)
-            } else if (data) {
-                event.sender.send('to-editor', data)
-            }
-        });
-    });
-});
-ipcMain.on('show_php_version', (event, options) => {
-    let _exec = 'ls -a -1 /etc/apache2/mods-enabled/ | grep -E ^php[A-Za-z0-9]{1}.[A-Za-z0-9]{1}.load'
-    dir = exec(_exec, function (err, stdout, stderr) {
-        if (err) {
-            event.sender.send('system-res', 'error php version')
-            event.sender.send('system-res', stderr)
+        if (config) {
+            fs.readFile(config.hosts_path, 'utf8', function (err, data) {
+                if (err) {
+                    event.sender.send('system-res', 'error open file ' + config.hosts_path)
+                    event.sender.send('system-res', err)
+                } else if (data) {
+                    event.sender.send('to-editor', data)
+                }
+            })
+        } else {
+            event.sender.send('system-res', 'error open config')
         }
-        if (stdout) {
-            event.sender.send('system-res', stdout)
-        }
-    });
-});
+    })
+})
 
 ////////////////// ipc //////////////////////
