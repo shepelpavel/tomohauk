@@ -281,9 +281,11 @@ ipcMain.on('check_pushed', (event, options) => {
     fs.readFile(configFile, 'utf8', function (err, data) {
         var config = JSON.parse(data)
         if (config) {
-            var _all_ok = true
             fs.readdir(config.projects_path, (err, directories) => {
-                directories.forEach(function (directoire) {
+                var _checked = []
+                var _need_push = []
+                directories.forEach(function (directoire, idx) {
+                    _checked.push(directoire)
                     if (directoire.charAt(0) !== '.' && fs.existsSync(config.projects_path + directoire + '/.git/')) {
                         var _exec = 'cd ' + config.projects_path + directoire + '/ && git cherry -v'
                         dir = exec(_exec, function (err, stdout, stderr) {
@@ -293,19 +295,19 @@ ipcMain.on('check_pushed', (event, options) => {
                                 event.sender.send('system-res', stderr)
                             } else {
                                 if (stdout) {
+                                    _need_push.push(directoire)
                                     event.sender.send('system-res', stdout)
-                                    _all_ok = false
                                     event.sender.send('git-status-push', '_______________ ' + directoire + ' _______________\n' + stdout)
                                 }
                             }
                         })
                     }
                 })
-                event.sender.send('loader-hide')
-                if (_all_ok) {
-                    event.sender.send('git-status-push', 'all projects pushed')
+                if (_checked.length == directories.length && !_need_push.length > 0) {
                     event.sender.send('system-res', 'all projects pushed')
+                    event.sender.send('git-status-push', 'all projects pushed')
                 }
+                event.sender.send('loader-hide')
             })
         } else {
             event.sender.send('system-res', 'error open config')
