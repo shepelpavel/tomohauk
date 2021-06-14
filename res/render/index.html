@@ -47,9 +47,24 @@
     </div>
     <div id="content" class="content">
         <div class="page" data-page="apache">
-            <button class="js-button" data-exec="restart_apache">Restart apache</button>
-            <button class="js-button" data-exec="edit_mysites_conf">Edit mysites.conf</button>
-            <button class="js-button" data-exec="edit_hosts">Edit hosts</button>
+            <div class="page__item">
+                <label>
+                    Restart apache:
+                </label>
+                <button class="js-button" data-exec="restart_apache">Restart</button>
+            </div>
+            <div class="page__item">
+                <label>
+                    Edit mysites.conf:
+                </label>
+                <button class="js-button-open with-save" data-exec="edit_mysites_conf" data-file="sites_conig_path">Edit</button>
+            </div>
+            <div class="page__item">
+                <label>
+                    Edit hosts:
+                </label>
+                <button class="js-button-open with-save" data-exec="edit_hosts" data-file="hosts_path">Edit</button>
+            </div>
         </div>
         <div id="php" class="page" data-page="php">
             <div class="page__item">
@@ -60,16 +75,23 @@
                     <div class="php__available_item" v-for="ver in php_ver" :class="phpCurrent(php_cur, ver)" @click="setPhpVer">{{ver}}</div>
                 </div>
             </div>
-            <button class="js-button" data-exec="show_php_version">Show PHP version</button>
         </div>
         <div class="page" data-page="git">
             <button class="js-button" data-exec="">git...</button>
         </div>
         <div class="page" data-page="logs">
-            <button class="js-button" data-exec="show_error_log">show error.log</button>
-            <button class="js-button" data-exec="show_access_log">show access.log</button>
-            <button class="js-button" data-exec="open_error_log">open error.log</button>
-            <button class="js-button" data-exec="open_access_log">open access.log</button>
+            <div class="page__item">
+                <label>
+                    error.log:
+                </label>
+                <button class="js-button-open" data-exec="show_error_log">show error.log</button>
+            </div>
+            <div class="page__item">
+                <label>
+                    access.log:
+                </label>
+                <button class="js-button-open" data-exec="show_access_log">show access.log</button>
+            </div>
         </div>
         <div id="settings" class="page" data-page="settings">
             <div class="page__item">
@@ -100,7 +122,8 @@
     </div>
     <div id="editor" class="editor" :class="display">
         <div class="editor__close js-close-editor"></div>
-        <textarea name="editor" id="" cols="30" rows="10">{{text}}</textarea>
+        <textarea name="editor" id="" cols="30" rows="10" v-model="text"></textarea>
+        <button class="editor__save js-save-editor" v-if="save_btn">Save</button>
     </div>
 </body>
 

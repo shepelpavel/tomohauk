@@ -33,7 +33,7 @@ function createWindow() {
     if (!fs.existsSync(configFile)) {
         var _options = {
             projects_path: "/var/www/",
-            hosts_path: "/fetc/hosts",
+            hosts_path: "/etc/hosts",
             sites_conig_path: "/etc/apache2/sites-available/mysites.conf"
         }
         var _json = JSON.stringify(_options)
@@ -121,6 +121,25 @@ ipcMain.on('get_cur_php_ver', (event, options) => {
         event.sender.send('php-current', _result)
     }
 });
+ipcMain.on('save_file', (event, options) => {
+    fs.writeFile(configDir + 'tmp', options.text, 'utf8', function (err, data) {
+        if (err) {
+            event.sender.send('system-res', 'error save tmp file')
+            event.sender.send('system-res', err)
+        } else {
+            let _exec = 'sudo mv ' + configDir + 'tmp ' + options.file + ' && sudo chown -R root:root ' + options.file + ' && sudo chmod 644 ' + options.file + ' && sudo service apache2 restart'
+            dir = exec(_exec, function (err, stdout, stderr) {
+                if (err) {
+                    event.sender.send('system-res', 'error saved file')
+                    event.sender.send('system-res', stderr)
+                } else {
+                    event.sender.send('system-res', stdout)
+                    event.sender.send('system-res', 'file saved')
+                }
+            });
+        }
+    });
+});
 ipcMain.on('set_php_ver', (event, options) => {
     if (options.en_ver.length > 0 &&
         options.all_ver.length > 0
@@ -140,6 +159,8 @@ ipcMain.on('set_php_ver', (event, options) => {
             if (stdout) {
                 event.sender.send('system-res', stdout)
             }
+            event.sender.send('system-res', 'apache restarted ...')
+            event.sender.send('php-current', options.en_ver)
         });
     }
 });
@@ -151,19 +172,6 @@ ipcMain.on('restart_apache', (event, options) => {
             event.sender.send('system-res', stderr)
         }
         event.sender.send('system-res', 'apache restarted')
-        if (stdout) {
-            event.sender.send('system-res', stdout)
-        }
-    });
-});
-ipcMain.on('open_error_log', (event, options) => {
-    let _exec = 'xdg-open /var/log/apache2/error.log'
-    dir = exec(_exec, function (err, stdout, stderr) {
-        if (err) {
-            event.sender.send('system-res', 'error open editor')
-            event.sender.send('system-res', stderr)
-        }
-        event.sender.send('system-res', 'opening ...')
         if (stdout) {
             event.sender.send('system-res', stdout)
         }
@@ -181,19 +189,6 @@ ipcMain.on('show_error_log', (event, options) => {
         }
     });
 });
-ipcMain.on('open_access_log', (event, options) => {
-    let _exec = 'xdg-open /var/log/apache2/access.log'
-    dir = exec(_exec, function (err, stdout, stderr) {
-        if (err) {
-            event.sender.send('system-res', 'error open editor')
-            event.sender.send('system-res', stderr)
-        }
-        event.sender.send('system-res', 'opening ...')
-        if (stdout) {
-            event.sender.send('system-res', stdout)
-        }
-    });
-});
 ipcMain.on('show_access_log', (event, options) => {
     fs.readFile('/var/log/apache2/access.log', 'utf8', function (err, data) {
         if (err) {
@@ -207,29 +202,31 @@ ipcMain.on('show_access_log', (event, options) => {
     });
 });
 ipcMain.on('edit_mysites_conf', (event, options) => {
-    let _exec = 'sudo xdg-open /etc/apache2/sites-available/mysites.conf'
-    dir = exec(_exec, function (err, stdout, stderr) {
-        if (err) {
-            event.sender.send('system-res', 'error open editor')
-            event.sender.send('system-res', stderr)
-        }
-        event.sender.send('system-res', 'opening ...')
-        if (stdout) {
-            event.sender.send('system-res', stdout)
-        }
+    fs.readFile(configFile, 'utf8', function (err, data) {
+        var config = JSON.parse(data)
+        fs.readFile(config.sites_conig_path, 'utf8', function (err, data) {
+            event.sender.send('system-res', 'opening ...')
+            if (err) {
+                event.sender.send('system-res', 'error open file ' + config.sites_conig_path)
+                event.sender.send('system-res', err)
+            } else if (data) {
+                event.sender.send('to-editor', data)
+            }
+        });
     });
 });
 ipcMain.on('edit_hosts', (event, options) => {
-    let _exec = 'sudo xdg-open /etc/hosts'
-    dir = exec(_exec, function (err, stdout, stderr) {
-        if (err) {
-            event.sender.send('system-res', 'error open editor')
-            event.sender.send('system-res', stderr)
-        }
-        event.sender.send('system-res', 'opening ...')
-        if (stdout) {
-            event.sender.send('system-res', stdout)
-        }
+    fs.readFile(configFile, 'utf8', function (err, data) {
+        var config = JSON.parse(data)
+        fs.readFile(config.hosts_path, 'utf8', function (err, data) {
+            event.sender.send('system-res', 'opening ...')
+            if (err) {
+                event.sender.send('system-res', 'error open file ' + config.hosts_path)
+                event.sender.send('system-res', err)
+            } else if (data) {
+                event.sender.send('to-editor', data)
+            }
+        });
     });
 });
 ipcMain.on('show_php_version', (event, options) => {

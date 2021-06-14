@@ -47,8 +47,10 @@ var settings = new Vue({
 var editor = new Vue({
     el: '#editor',
     data: {
+        file: '',
         text: '',
-        display: 'hide-editor'
+        display: 'hide-editor',
+        save_btn: false
     }
 })
 
@@ -103,7 +105,17 @@ ipcRenderer.on('to-editor', (event, resp) => {
 openPage('apache')
 
 $('.js-button').on('click', function () {
-    let _exec = $(this).attr('data-exec')
+    var _exec = $(this).attr('data-exec')
+    ipcRenderer.send(_exec)
+})
+
+$('.js-button-open').on('click', function () {
+    var _exec = $(this).attr('data-exec')
+    var _file = $(this).attr('data-file')
+    if ($(this).hasClass('with-save') && _file) {
+        editor.save_btn = true
+        editor.file = settings.settings[_file]
+    }
     ipcRenderer.send(_exec)
 })
 
@@ -136,4 +148,13 @@ $('.js-save').on('click', function () {
 
 $('.js-close-editor').on('click', function () {
     editor.display = 'hide-editor'
+    editor.save_btn = false
+})
+
+$('.js-save-editor').on('click', function () {
+    var _data = {
+        file: editor.file,
+        text: editor.text
+    }
+    ipcRenderer.send('save_file', _data)
 })
