@@ -1,8 +1,8 @@
-const {
-    ipcRenderer
-} = require('electron')
-const $ = require('./../_assets/module/jquery/jquery.min.js')
-const Vue = require('./../_assets/module/vue/vue.min.js')
+// const {
+//     ipcRenderer
+// } = require('electron')
+// const $ = require('./../_assets/module/jquery/jquery.min.js')
+// const Vue = require('./../_assets/module/vue/vue.min.js')
 
 function openPage(page) {
     if (!$('.page[data-page="' + page + '"]').hasClass('active')) {
@@ -46,7 +46,7 @@ var settings = new Vue({
         php_ver: []
     },
     mounted: function () {
-        ipcRenderer.send('get_settings')
+        // ipcRenderer.send('get_settings')
     }
 })
 
@@ -65,7 +65,7 @@ var editor = new Vue({
                 file: this.file,
                 text: this.text
             }
-            ipcRenderer.send('save_file', _data)
+            // ipcRenderer.send('save_file', _data)
         }
     }
 })
@@ -77,8 +77,8 @@ var php = new Vue({
         php_cur: ''
     },
     mounted: function () {
-        ipcRenderer.send('get_php_ver')
-        ipcRenderer.send('get_cur_php_ver')
+        // ipcRenderer.send('get_php_ver')
+        // ipcRenderer.send('get_cur_php_ver')
     },
     methods: {
         phpCurrent: function (php_cur, ver) {
@@ -94,7 +94,7 @@ var php = new Vue({
                     en_ver: _en_ver,
                     all_ver: this.php_ver
                 }
-                ipcRenderer.send('set_php_ver', _data)
+                // ipcRenderer.send('set_php_ver', _data)
             }
         }
     }
@@ -117,13 +117,13 @@ var git = new Vue({
                     repo: this.git_clone.replace(/\s/g, ''),
                     repo_name: this.repo_name ? this.repo_name : this.git_clone.replace(/\s/g, '').split('/')[1].split('.')[0]
                 }
-                ipcRenderer.send('git_clone', _data)
+                // ipcRenderer.send('git_clone', _data)
             }
         },
         checkPushed: function () {
             loader.show = true
             this.need_push = ''
-            ipcRenderer.send('check_pushed')
+            // ipcRenderer.send('check_pushed')
         }
     },
     watch: {
@@ -141,44 +141,44 @@ var git = new Vue({
     }
 })
 
-ipcRenderer.on('loader-hide', (event, resp) => {
-    loader.show = false
-})
-ipcRenderer.on('system-res', (event, resp) => {
-    terminal.text += '[' + new Date().toLocaleTimeString('ru-RU', {
-        timeZone: 'Europe/Moscow'
-    }) + '] ' + resp + '\n'
-})
-ipcRenderer.on('php-available', (event, resp) => {
-    php.php_ver = resp
-})
-ipcRenderer.on('php-current', (event, resp) => {
-    php.php_cur = resp
-})
-ipcRenderer.on('settings-data', (event, resp) => {
-    settings.settings = resp
-})
-ipcRenderer.on('to-editor', (event, resp) => {
-    editor.display = 'show-editor'
-    editor.text = resp
-})
-ipcRenderer.on('clear-inputs-git', (event, resp) => {
-    for (var _i = 0; resp.length > _i; _i++) {
-        $('input[name="' + resp[_i] + '"]').val('')
-        git[resp[_i]] = ''
-    }
-})
-ipcRenderer.on('git-status-push', (event, resp) => {
-    git.need_push += resp + '\n'
-    git.show_push = true
-})
+// ipcRenderer.on('loader-hide', (event, resp) => {
+//     loader.show = false
+// })
+// ipcRenderer.on('system-res', (event, resp) => {
+//     terminal.text += '[' + new Date().toLocaleTimeString('ru-RU', {
+//         timeZone: 'Europe/Moscow'
+//     }) + '] ' + resp + '\n'
+// })
+// ipcRenderer.on('php-available', (event, resp) => {
+//     php.php_ver = resp
+// })
+// ipcRenderer.on('php-current', (event, resp) => {
+//     php.php_cur = resp
+// })
+// ipcRenderer.on('settings-data', (event, resp) => {
+//     settings.settings = resp
+// })
+// ipcRenderer.on('to-editor', (event, resp) => {
+//     editor.display = 'show-editor'
+//     editor.text = resp
+// })
+// ipcRenderer.on('clear-inputs-git', (event, resp) => {
+//     for (var _i = 0; resp.length > _i; _i++) {
+//         $('input[name="' + resp[_i] + '"]').val('')
+//         git[resp[_i]] = ''
+//     }
+// })
+// ipcRenderer.on('git-status-push', (event, resp) => {
+//     git.need_push += resp + '\n'
+//     git.show_push = true
+// })
 
 openPage('apache')
 
 $('.js-button').on('click', function () {
     loader.show = true
     var _exec = $(this).attr('data-exec')
-    ipcRenderer.send(_exec)
+    // ipcRenderer.send(_exec)
 })
 
 $('.js-button-open').on('click', function () {
@@ -188,7 +188,7 @@ $('.js-button-open').on('click', function () {
         editor.save_btn = true
         editor.file = settings.settings[_file]
     }
-    ipcRenderer.send(_exec)
+    // ipcRenderer.send(_exec)
 })
 
 $('.js-menu-button').on('click', function () {
@@ -222,7 +222,7 @@ $('.js-save').on('click', function () {
     if (settings.settings.projects_path.slice(-1) !== '/') {
         settings.settings.projects_path = settings.settings.projects_path + '/'
     }
-    ipcRenderer.send('write_settings', settings.settings)
+    // ipcRenderer.send('write_settings', settings.settings)
 })
 
 $('.js-close-editor').on('click', function () {

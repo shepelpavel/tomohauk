@@ -22,6 +22,8 @@ var path = {
         svg: './res/_source/svg/**/*\.svg',
         font: './res/_source/fonts/**/*\.*',
         module: './res/_source/module/**/*.*',
+        assets: './res/_assets/**/*.*',
+        index: './res/render/index.html',
     },
     build: {
         js: './res/_assets/js/',
@@ -31,6 +33,8 @@ var path = {
         svg: './res/_assets/svg/',
         font: './res/_assets/fonts/',
         module: './res/_assets/module/',
+        assets: './demo/_assets/',
+        index: './demo/public/',
     }
 };
 
@@ -60,7 +64,6 @@ gulp.task('css:build', gulp.series(function () {
         .pipe(cssnano().on('error', gutil.log))
         .pipe(gulp.dest(path.build.css));
 }));
-
 
 gulp.task('img:build', gulp.series(function () {
     return gulp.src(path.src.img)
@@ -105,6 +108,21 @@ gulp.task('module:build', gulp.series(function () {
         .pipe(gulp.dest(path.build.module))
 }));
 
+gulp.task('assets:demo', gulp.series(function () {
+    return gulp.src(path.src.assets)
+        .pipe(gulp.dest(path.build.assets))
+}));
+
+gulp.task('index:demo', gulp.series(function () {
+    return gulp.src(path.src.index)
+        .pipe(gulp.dest(path.build.index))
+}));
+
+gulp.task('demo', gulp.series([
+    'assets:demo',
+    'index:demo',
+]));
+
 gulp.task('build', gulp.series([
     'js:build',
     'style:build',
@@ -112,7 +130,8 @@ gulp.task('build', gulp.series([
     'img:build',
     'svg:build',
     'font:build',
-    'module:build'
+    'module:build',
+    'demo'
 ]));
 
 gulp.task('watch', gulp.series(function () {
