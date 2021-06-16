@@ -33,8 +33,8 @@ var path = {
         svg: './res/_assets/svg/',
         font: './res/_assets/fonts/',
         module: './res/_assets/module/',
-        assets: './demo/_assets/',
-        index: './demo/public/',
+        assets: './_assets/',
+        index: './',
     }
 };
 
