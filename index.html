@@ -3,155 +3,110 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Tomohauk</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Tomohauk DEMO</title>
     <script src="assets/module/jquery/jquery.min.js"></script>
-    <script src="assets/module/vue/vue.min.js"></script>
 </head>
 
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        background-color: #121212;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .window {
+        width: 900px;
+        height: 30px;
+        background-color: #666666;
+        border: 1px solid #666666;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #FFFFFF;
+    }
+
+    .close {
+        position: absolute;
+        right: 9px;
+        top: 9px;
+        width: 12px;
+        height: 12px;
+    }
+
+    .rollup {
+        position: absolute;
+        right: 40px;
+        top: 13px;
+        width: 12px;
+        height: 12px;
+    }
+
+    iframe {
+        border: 1px solid #666666;
+        position: relative;
+    }
+
+    #descr {
+        display: flex;
+        opacity: 0;
+        color: #cccccc;
+        font-family: monospace;
+        font-size: 13px;
+        flex-wrap: wrap;
+        margin: 60px 0 40px;
+    }
+
+    #descr .new {
+        opacity: 0;
+        width: 9px;
+    }
+
+    #descr .opac {
+        opacity: 1;
+    }
+</style>
+
 <body>
-    <div id="menu" class="menu">
-        <div class="menu__button js-menu-button">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        <div class="menu__item js-menu-item" data-page="apache">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="assets/svg/sprite.svg#apache"></use>
-            </svg>
-            <span>Apache</span>
-        </div>
-        <div class="menu__item js-menu-item" data-page="php">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="assets/svg/sprite.svg#php"></use>
-            </svg>
-            <span>PHP</span>
-        </div>
-        <div class="menu__item js-menu-item" data-page="git">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="assets/svg/sprite.svg#git"></use>
-            </svg>
-            <span>Git</span>
-        </div>
-        <div class="menu__item js-menu-item" data-page="logs">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="assets/svg/sprite.svg#logs"></use>
-            </svg>
-            <span>Logs</span>
-        </div>
-        <div class="menu__settings js-menu-item" data-page="settings">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="assets/svg/sprite.svg#settings"></use>
-            </svg>
-            <span>Settings</span>
-        </div>
+    <div id="descr">Apache management and additional utilities for the local server web developer.</div>
+    <div class="window">
+        Tomohauk
+        <svg class="rollup" width="450" height="50" viewBox="0 0 450 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="450" height="50" fill="white" />
+        </svg>
+        <svg class="close" width="354" height="354" viewBox="0 0 354 354" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M353.777 35.5786L35.5787 353.777L0.223349 318.421L318.421 0.223305L353.777 35.5786Z" fill="white" />
+            <path d="M35.5786 0.223297L353.777 318.421L318.421 353.777L0.223305 35.5786L35.5786 0.223297Z" fill="white" />
+        </svg>
     </div>
-    <div id="content" class="content">
-        <div class="page" data-page="apache">
-            <div class="page__item">
-                <label>
-                    Restart apache:
-                </label>
-                <button class="js-button" data-exec="restart_apache">Restart</button>
-            </div>
-            <div class="page__item">
-                <label>
-                    Edit mysites.conf:
-                </label>
-                <button class="js-button-open with-save" data-exec="edit_mysites_conf" data-file="sites_conig_path">Edit</button>
-            </div>
-            <div class="page__item">
-                <label>
-                    Edit hosts:
-                </label>
-                <button class="js-button-open with-save" data-exec="edit_hosts" data-file="hosts_path">Edit</button>
-            </div>
-        </div>
-        <div id="php" class="page" data-page="php">
-            <div class="page__item">
-                <label>
-                    PHP versions:
-                </label>
-                <div class="php__available">
-                    <div class="php__available_item" v-for="ver in php_ver" :class="phpCurrent(php_cur, ver)" @click="setPhpVer">{{ver}}</div>
-                </div>
-            </div>
-        </div>
-        <div id="git" class="page" data-page="git">
-            <div class="page__item">
-                <label for="git_clone">
-                    Git clone:
-                </label>
-                <input type="text" id="git_clone" name="git_clone" v-model="git_clone" />
-                <button class="hide" data-show="git_clone" @click="gitClone" disabled>Clone</button>
-                <div class="limiter"></div>
-                <label for="git_clone">
-                    Repo name:
-                </label>
-                <input type="text" id="repo_name" name="repo_name" v-model="repo_name" />
-            </div>
-            <div class="page__item">
-                <label for="git_clone">
-                    Check pushed:
-                </label>
-                <button @click="checkPushed">Check</button>
-                <textarea v-if="show_push" name="need_push" id="need_push">{{need_push}}</textarea>
-            </div>
-        </div>
-        <div class="page" data-page="logs">
-            <div class="page__item">
-                <label>
-                    error.log:
-                </label>
-                <button class="js-button-open" data-exec="show_error_log">show error.log</button>
-            </div>
-            <div class="page__item">
-                <label>
-                    access.log:
-                </label>
-                <button class="js-button-open" data-exec="show_access_log">show access.log</button>
-            </div>
-        </div>
-        <div id="settings" class="page" data-page="settings">
-            <div class="page__item">
-                <label for="hosts_path">
-                    Hosts file:
-                </label>
-                <input type="text" id="hosts_path" name="hosts_path" v-model="settings.hosts_path" />
-                <button class="js-save hide" data-save="hosts_path" data-show="hosts_path">Save</button>
-            </div>
-            <div class="page__item">
-                <label for="sites_conig_path">
-                    Sites config file:
-                </label>
-                <input type="text" id="sites_conig_path" name="sites_conig_path" v-model="settings.sites_conig_path" />
-                <button class="js-save hide" data-save="sites_conig_path" data-show="sites_conig_path">Save</button>
-            </div>
-            <div class="page__item">
-                <label for="projects_path">
-                    Projects path:
-                </label>
-                <input type="text" id="projects_path" name="projects_path" v-model="settings.projects_path" />
-                <button class="js-save hide" data-save="projects_path" data-show="projects_path">Save</button>
-            </div>
-        </div>
-    </div>
-    <div id="terminal" class="terminal">
-        <textarea class="terminal__item">{{ text }}</textarea>
-    </div>
-    <div id="editor" class="editor" :class="display">
-        <div class="editor__close js-close-editor"></div>
-        <textarea name="editor" id="" cols="30" rows="10" v-model="text"></textarea>
-        <button class="editor__save" v-if="save_btn" @click="saveFromEditor">Save</button>
-    </div>
-    <div id="loader" class="loader" v-if="show"></div>
+    <iframe src="demoindex.html" width="900" height="600">
+        Ваш браузер не поддерживает плавающие фреймы!
+    </iframe>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.fn.animate_Text = function () {
+                var string = this.text();
+                return this.each(function () {
+                    var $this = $(this);
+                    $this.html(string.replace(/./g, '<span class="new">$&</span>'));
+                    $this.find('span.new').each(function (i, el) {
+                        setTimeout(function () {
+                            $(el).addClass('opac');
+                        }, 40 * i);
+                    });
+                });
+            };
+            setTimeout(function () {
+                $('#descr').css('opacity', 1);
+                $('#descr').animate_Text();
+            }, 1000);
+        });
+    </script>
 </body>
-
-<div style="display: none;">
-    <img src="assets/svg/sprite.svg">
-</div>
-
-<script src="assets/js/bundle.min.js"></script>
 
 </html>

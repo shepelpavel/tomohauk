@@ -22,19 +22,15 @@ var path = {
         svg: './res/_source/svg/**/*\.svg',
         font: './res/_source/fonts/**/*\.*',
         module: './res/_source/module/**/*.*',
-        assets: './res/_assets/**/*.*',
-        index: './res/render/index.html',
     },
     build: {
-        js: './res/_assets/js/',
-        style: './res/_assets/css/',
-        css: './res/_assets/css/',
-        img: './res/_assets/img/',
-        svg: './res/_assets/svg/',
-        font: './res/_assets/fonts/',
-        module: './res/_assets/module/',
-        assets: './assets/',
-        index: './',
+        js: './assets/js/',
+        style: './assets/css/',
+        css: './assets/css/',
+        img: './assets/img/',
+        svg: './assets/svg/',
+        font: './assets/fonts/',
+        module: './assets/module/',
     }
 };
 
@@ -108,21 +104,6 @@ gulp.task('module:build', gulp.series(function () {
         .pipe(gulp.dest(path.build.module))
 }));
 
-gulp.task('assets:demo', gulp.series(function () {
-    return gulp.src(path.src.assets)
-        .pipe(gulp.dest(path.build.assets))
-}));
-
-gulp.task('index:demo', gulp.series(function () {
-    return gulp.src(path.src.index)
-        .pipe(gulp.dest(path.build.index))
-}));
-
-gulp.task('demo', gulp.series([
-    'assets:demo',
-    'index:demo',
-]));
-
 gulp.task('build', gulp.series([
     'js:build',
     'style:build',
@@ -130,8 +111,7 @@ gulp.task('build', gulp.series([
     'img:build',
     'svg:build',
     'font:build',
-    'module:build',
-    'demo'
+    'module:build'
 ]));
 
 gulp.task('watch', gulp.series(function () {

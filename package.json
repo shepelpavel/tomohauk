@@ -19,12 +19,10 @@
     ],
     "main": "main.js",
     "scripts": {
-        "dev": "gulp build && electron .",
-        "build": "gulp build && electron-builder --linux"
+        "dev": "gulp",
+        "build": "gulp build"
     },
     "devDependencies": {
-        "electron": "^12.0.9",
-        "electron-builder": "^22.10.5",
         "gulp": "^4.0.2",
         "gulp-autoprefixer": "^7.0.1",
         "gulp-babel-minify": "^0.5.1",
@@ -36,18 +34,5 @@
         "gulp-svg-sprite": "^1.5.0",
         "gulp-svgmin": "^3.0.0",
         "gulp-util": "^3.0.8"
-    },
-    "build": {
-        "productName": "Tomohauk",
-        "appId": "tomohauk",
-        "linux": {
-            "synopsis": "Apache config electron",
-            "description": "Apache config electron",
-            "category": "Development",
-            "icon": "./res/icons/icon256.png",
-            "target": [
-                "AppImage"
-            ]
-        }
     }
 }
