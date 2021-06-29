@@ -59,6 +59,25 @@
                 </label>
                 <button class="js-button" data-exec="restart_nginx">Restart</button>
             </div>
+            <div class="page__item add-domain">
+                <label>
+                    Add domain:
+                </label>
+                <input type="text" id="add_domain_name" name="add_domain_name" v-model="name" />
+                <button class="js-button-adddomain" :class="hideAddButton(name)" @click="addDomain">Add</button>
+                <div class="limiter"></div>
+                <label>
+                    public path
+                </label>
+                <input type="text" id="add_domain_public" name="add_domain_public" v-model="public" />
+                <div class="limiter"></div>
+                <label>
+                    php ver.
+                </label>
+                <div class="php-use">
+                    <div class="php-use__item" v-for="ver in php_ver" :class="phpSelected(php_use, ver)" @click="usePhpVer">{{ver}}</div>
+                </div>
+            </div>
             <div class="page__item">
                 <label>
                     Enable sites:

@@ -96,14 +96,9 @@ ipcMain.on('write_settings', (event, options) => {
 })
 ipcMain.on('get_php_ver', (event, options) => {
     var _result = []
-    if (fs.existsSync('/etc/apache2/mods-available/')) {
-        fs.readdirSync('/etc/apache2/mods-available/').forEach(function (file) {
-            if (
-                file.match(/^php/gi) &&
-                file.match(/conf$/gi)
-            ) {
-                _result.push(file.replace('php', '').replace('.conf', ''))
-            }
+    if (fs.existsSync('/etc/php/')) {
+        fs.readdirSync('/etc/php/').forEach(function (file) {
+            _result.push(file)
         })
         if (_result.length > 0) {
             event.sender.send('php-available', _result)
@@ -133,7 +128,7 @@ ipcMain.on('save_file', (event, options) => {
             event.sender.send('system-res', err)
             event.sender.send('loader-hide')
         } else {
-            var _exec = 'sudo mv ' + configDir + 'tmp ' + options.file + ' && sudo chown -R root:root ' + options.file + ' && sudo chmod 644 ' + options.file
+            var _exec = 'sudo mv ' + configDir + 'tmp ' + options.file + ' && sudo chown -R root:root ' + options.file + ' && sudo chmod 644 ' + options.file + ' && sudo service nginx restart && sudo service apace2 restart'
             dir = exec(_exec, function (err, stdout, stderr) {
                 if (err) {
                     event.sender.send('system-res', 'error save file')
@@ -157,6 +152,54 @@ ipcMain.on('get_sites_enable', (event, options) => {
         if (_result.length > 0) {
             event.sender.send('sites-enable-arr', _result)
         }
+    }
+})
+ipcMain.on('add_domain', (event, options) => {
+    var _config = `server {
+    listen 80;
+    listen [::]:80;
+    root /var/www/${options.name};
+    index index.html index.php;
+    server_name ${options.name};
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    location ~ \\.php$ {
+        try_files $uri = 404;
+        include fastcgi_params;
+        fastcgi_pass  unix:/run/php/php${options.php}-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+    }
+    error_page 405 =200 $uri;
+}`
+    var _hosts = '127.0.0.1 ' + options.name
+    if (!fs.existsSync('/etc/nginx/sites-available/' + options.name)) {
+        fs.writeFile(configDir + 'tmp_domain', _config, 'utf8', function (err, data) {
+            if (err) {
+                event.sender.send('system-res', 'error save tmp_domain file')
+                event.sender.send('system-res', err)
+                event.sender.send('loader-hide')
+            } else {
+                var _exec = 'sudo mv ' + configDir + 'tmp_domain /etc/nginx/sites-available/' + options.name + ' && sudo chown -R root:root /etc/nginx/sites-available/' + options.name + ' && sudo chmod 644 /etc/nginx/sites-available/' + options.name + ' && sudo ln -s /etc/nginx/sites-available/' + options.name + ' /etc/nginx/sites-enabled/ && echo "' + _hosts + '" | sudo tee -a /etc/hosts && sudo service nginx restart'
+                dir = exec(_exec, function (err, stdout, stderr) {
+                    if (err) {
+                        event.sender.send('system-res', 'error save file')
+                        event.sender.send('system-res', stderr)
+                    } else {
+                        event.sender.send('system-res', stdout)
+                        event.sender.send('system-res', 'domain added')
+                        event.sender.send('clear-inputs-domain')
+                    }
+                    event.sender.send('loader-hide')
+                    event.sender.send('rescan-sites')
+                })
+            }
+        })
+    } else {
+        event.sender.send('system-res', 'domain exist')
+        event.sender.send('loader-hide')
+        event.sender.send('clear-inputs-domain')
     }
 })
 ipcMain.on('edit_site_config', (event, options) => {

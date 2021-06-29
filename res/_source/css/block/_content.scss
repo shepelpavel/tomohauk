@@ -8,6 +8,7 @@
     .page {
         height: inherit;
         overflow: hidden;
+        overflow-y: auto;
         transform: scaleY(0);
         transform-origin: top;
         transition: .3s;
@@ -21,7 +22,7 @@
 
         &__item {
             padding: 10px 0;
-            border-bottom: 1px solid rgba(var(--color_white), 0.1);;
+            border-bottom: 1px solid rgba(var(--color_white), 0.1);
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
