@@ -1,0 +1,35 @@
+.add-domain {
+    .php-use {
+        display: flex;
+        gap: 10px;
+
+        &__item {
+            font-size: 9px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(var(--color_black), 0.5);
+            border: 1px solid rgba(var(--color_black), 1);
+            cursor: pointer;
+            transition: .3s;
+
+            &.enabled {
+                border: 1px solid rgba(var(--color_white), 1);
+            }
+
+            &:hover {
+                background-color: rgba(var(--color_white), 0.1);
+            }
+        }
+    }
+
+    .roll-hide {
+        height: 0;
+    }
+
+    .roll-show {
+        height: auto;
+    }
+}

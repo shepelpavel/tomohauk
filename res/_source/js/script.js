@@ -45,9 +45,14 @@ var settings = new Vue({
         settings: {},
         php_ver: []
     },
+    methods: {
+        getSettings: function () {
+            ipcRenderer.send('get_settings')
+        }
+    },
     mounted: function () {
-        ipcRenderer.send('get_settings')
-    }
+        this.getSettings()
+    },
 })
 
 var editor = new Vue({
@@ -66,6 +71,48 @@ var editor = new Vue({
                 text: this.text
             }
             ipcRenderer.send('save_file', _data)
+        }
+    }
+})
+
+var nginx = new Vue({
+    el: '#nginx',
+    data: {
+        name: '',
+        public: '/',
+        php_ver: [],
+        php_use: '7.4',
+        sites_enable: []
+    },
+    mounted: function () {
+        ipcRenderer.send('get_sites_enable')
+    },
+    methods: {
+        phpSelected: function (php_use, ver) {
+            if (php_use == ver) {
+                return 'enabled'
+            }
+        },
+        usePhpVer: function (event) {
+            if (!event.target.classList.contains('enabled')) {
+                this.php_use = $(event.target).text()
+            }
+        },
+        hideAddButton: function (name) {
+            if (name.replace(/[^0-9a-zA-Z]+/g, '').length > 0) {
+                return 'show'
+            } else {
+                return 'hide'
+            }
+        },
+        addDomain: function () {
+            loader.show = true
+            var _data = {
+                name: this.name,
+                public: this.public,
+                php: this.php_use
+            }
+            ipcRenderer.send('add_domain', _data)
         }
     }
 })
@@ -149,8 +196,15 @@ ipcRenderer.on('system-res', (event, resp) => {
         timeZone: 'Europe/Moscow'
     }) + '] ' + resp + '\n'
 })
+ipcRenderer.on('sites-enable-arr', (event, resp) => {
+    nginx.sites_enable = resp
+})
+ipcRenderer.on('rescan-sites', (event, resp) => {
+    ipcRenderer.send('get_sites_enable')
+})
 ipcRenderer.on('php-available', (event, resp) => {
     php.php_ver = resp
+    nginx.php_ver = resp
 })
 ipcRenderer.on('php-current', (event, resp) => {
     php.php_cur = resp
@@ -160,7 +214,9 @@ ipcRenderer.on('settings-data', (event, resp) => {
 })
 ipcRenderer.on('to-editor', (event, resp) => {
     editor.display = 'show-editor'
-    editor.text = resp
+    editor.text = resp.text
+    editor.file = resp.file
+    editor.save_btn = resp.be_save
 })
 ipcRenderer.on('clear-inputs-git', (event, resp) => {
     for (var _i = 0; resp.length > _i; _i++) {
@@ -168,12 +224,16 @@ ipcRenderer.on('clear-inputs-git', (event, resp) => {
         git[resp[_i]] = ''
     }
 })
+ipcRenderer.on('clear-inputs-domain', (event, resp) => {
+    $('input[name="add_domain_name"]').val('')
+    nginx.name = ''
+})
 ipcRenderer.on('git-status-push', (event, resp) => {
     git.need_push += resp + '\n'
     git.show_push = true
 })
 
-openPage('apache')
+openPage('nginx')
 
 $('.js-button').on('click', function () {
     loader.show = true
@@ -181,14 +241,15 @@ $('.js-button').on('click', function () {
     ipcRenderer.send(_exec)
 })
 
-$('.js-button-open').on('click', function () {
+$('body').on('click', '.js-button-open', function () {
     var _exec = $(this).attr('data-exec')
     var _file = $(this).attr('data-file')
-    if ($(this).hasClass('with-save') && _file) {
-        editor.save_btn = true
-        editor.file = settings.settings[_file]
+    var _mode = $(this).attr('data-mode')
+    var _data = {
+        file: _file,
+        mode: _mode
     }
-    ipcRenderer.send(_exec)
+    ipcRenderer.send(_exec, _data)
 })
 
 $('.js-menu-button').on('click', function () {
@@ -202,6 +263,8 @@ $('.js-menu-button').on('click', function () {
 
 $('.js-menu-item').on('click', function () {
     var _page = $(this).attr('data-page')
+    settings.getSettings()
+    $('button.js-save').removeClass('show').addClass('hide').prop('disabled', true)
     openPage(_page)
 })
 

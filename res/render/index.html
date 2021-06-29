@@ -14,17 +14,17 @@
             <span></span>
             <span></span>
         </div>
+        <div class="menu__item js-menu-item" data-page="nginx">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <use xlink:href="./../_assets/svg/sprite.svg#nginx"></use>
+            </svg>
+            <span>Nginx</span>
+        </div>
         <div class="menu__item js-menu-item" data-page="apache">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <use xlink:href="./../_assets/svg/sprite.svg#apache"></use>
             </svg>
             <span>Apache</span>
-        </div>
-        <div class="menu__item js-menu-item" data-page="php">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="./../_assets/svg/sprite.svg#php"></use>
-            </svg>
-            <span>PHP</span>
         </div>
         <div class="menu__item js-menu-item" data-page="git">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -46,28 +46,70 @@
         </div>
     </div>
     <div id="content" class="content">
+        <div id="nginx" class="page" data-page="nginx">
+            <div class="page__item">
+                <label>
+                    Edit hosts:
+                </label>
+                <button class="js-button-open" data-exec="edit_hosts">Edit</button>
+            </div>
+            <div class="page__item">
+                <label>
+                    Restart nginx:
+                </label>
+                <button class="js-button" data-exec="restart_nginx">Restart</button>
+            </div>
+            <div class="page__item add-domain">
+                <label>
+                    Add domain:
+                </label>
+                <input type="text" id="add_domain_name" name="add_domain_name" v-model="name" />
+                <button class="js-button-adddomain" :class="hideAddButton(name)" @click="addDomain">Add</button>
+                <div class="limiter"></div>
+                <label>
+                    public path
+                </label>
+                <input type="text" id="add_domain_public" name="add_domain_public" v-model="public" />
+                <div class="limiter"></div>
+                <label>
+                    php ver.
+                </label>
+                <div class="php-use">
+                    <div class="php-use__item" v-for="ver in php_ver" :class="phpSelected(php_use, ver)" @click="usePhpVer">{{ver}}</div>
+                </div>
+            </div>
+            <div class="page__item">
+                <label>
+                    Enable sites:
+                </label>
+                <div class="nginx__sites">
+                    <div class="nginx__sites_item" v-for="site in sites_enable">
+                        <div class="site__name">{{site}}</div>
+                        <button class="site__button js-button-open" data-mode="nginx_conf" :data-file="site" data-exec="edit_site_config">Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="page" data-page="apache">
+            <div class="page__item">
+                <label>
+                    Edit hosts:
+                </label>
+                <button class="js-button-open" data-exec="edit_hosts">Edit</button>
+            </div>
+            <div class="page__item">
+                <label>
+                    Edit mysites.conf:
+                </label>
+                <button class="js-button-open" data-exec="edit_mysites_conf">Edit</button>
+            </div>
             <div class="page__item">
                 <label>
                     Restart apache:
                 </label>
                 <button class="js-button" data-exec="restart_apache">Restart</button>
             </div>
-            <div class="page__item">
-                <label>
-                    Edit mysites.conf:
-                </label>
-                <button class="js-button-open with-save" data-exec="edit_mysites_conf" data-file="sites_conig_path">Edit</button>
-            </div>
-            <div class="page__item">
-                <label>
-                    Edit hosts:
-                </label>
-                <button class="js-button-open with-save" data-exec="edit_hosts" data-file="hosts_path">Edit</button>
-            </div>
-        </div>
-        <div id="php" class="page" data-page="php">
-            <div class="page__item">
+            <div id="php" class="page__item">
                 <label>
                     PHP versions:
                 </label>
@@ -100,15 +142,27 @@
         <div class="page" data-page="logs">
             <div class="page__item">
                 <label>
-                    error.log:
+                    nginx error.log:
                 </label>
-                <button class="js-button-open" data-exec="show_error_log">show error.log</button>
+                <button class="js-button-open" data-exec="show_nginx_error_log">show error.log</button>
             </div>
             <div class="page__item">
                 <label>
-                    access.log:
+                    nginx access.log:
                 </label>
-                <button class="js-button-open" data-exec="show_access_log">show access.log</button>
+                <button class="js-button-open" data-exec="show_nginx_access_log">show access.log</button>
+            </div>
+            <div class="page__item">
+                <label>
+                    apache error.log:
+                </label>
+                <button class="js-button-open" data-exec="show_apache_error_log">show error.log</button>
+            </div>
+            <div class="page__item">
+                <label>
+                    apache access.log:
+                </label>
+                <button class="js-button-open" data-exec="show_apache_access_log">show access.log</button>
             </div>
         </div>
         <div id="settings" class="page" data-page="settings">
@@ -121,9 +175,9 @@
             </div>
             <div class="page__item">
                 <label for="sites_conig_path">
-                    Sites config file:
+                    Apache sites file:
                 </label>
-                <input type="text" id="sites_conig_path" name="sites_conig_path" v-model="settings.sites_conig_path" />
+                <input type="text" id="sites_conig_path" name="sites_conig_path" v-model="settings.sites_conig_path" :value="settings.sites_conig_path" />
                 <button class="js-save hide" data-save="sites_conig_path" data-show="sites_conig_path">Save</button>
             </div>
             <div class="page__item">
