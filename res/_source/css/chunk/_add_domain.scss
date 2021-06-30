@@ -16,11 +16,12 @@
             transition: .3s;
 
             &.enabled {
-                border: 1px solid rgba(var(--color_white), 1);
+                border: 1px solid rgba(var(--color_light), 1);
+                color: rgba(var(--color_light), 1);
             }
 
             &:hover {
-                background-color: rgba(var(--color_white), 0.1);
+                background-color: rgba(var(--color_light), 0.1);
             }
         }
     }
