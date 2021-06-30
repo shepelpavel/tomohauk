@@ -128,7 +128,7 @@ ipcMain.on('save_file', (event, options) => {
             event.sender.send('system-res', err)
             event.sender.send('loader-hide')
         } else {
-            var _exec = 'sudo mv ' + configDir + 'tmp ' + options.file + ' && sudo chown -R root:root ' + options.file + ' && sudo chmod 644 ' + options.file + ' && sudo service nginx restart && sudo service apace2 restart'
+            var _exec = 'sudo mv ' + configDir + 'tmp ' + options.file + ' && sudo chown -R root:root ' + options.file + ' && sudo chmod 644 ' + options.file + ' && sudo service nginx restart && sudo service apache2 restart'
             dir = exec(_exec, function (err, stdout, stderr) {
                 if (err) {
                     event.sender.send('system-res', 'error save file')

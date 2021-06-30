@@ -16,10 +16,13 @@
                     align-items: center;
                     font-size: 10px;
                     text-align: left;
+                    border-bottom: 1px solid rgba(var(--color_light), 0.1);
                 }
 
                 &__button {
                     height: 30px;
+                    font-size: 10px;
+                    max-width: 75px;
                 }
             }
         }

@@ -51,7 +51,7 @@
             height: 40px;
             display: block;
             flex: 0 0 auto;
-            fill: rgba(var(--color_gray), 1);
+            fill: rgba(var(--color_light), 0.6);
         }
 
         span {
@@ -60,7 +60,7 @@
             transition: .3s;
             margin-left: 10px;
             font-size: 14px;
-            color: rgba(var(--color_gray), 1);
+            color: rgba(var(--color_light), 0.6);
         }
 
         &.active {
@@ -68,7 +68,7 @@
         }
 
         &:hover {
-            background-color: rgba(var(--color_white), 0.1);
+            background-color: rgba(var(--color_light), 0.1);
         }
     }
 
@@ -89,7 +89,7 @@
             height: 40px;
             display: block;
             flex: 0 0 auto;
-            fill: rgba(var(--color_gray), 1);
+            fill: rgba(var(--color_light), 0.6);
         }
 
         span {
@@ -98,7 +98,7 @@
             transition: .3s;
             margin-left: 10px;
             font-size: 14px;
-            color: rgba(var(--color_gray), 1);
+            color: rgba(var(--color_light), 0.6);
         }
 
         &.active {

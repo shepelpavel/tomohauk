@@ -86,6 +86,7 @@
                     <div class="nginx__sites_item" v-for="site in sites_enable">
                         <div class="site__name">{{site}}</div>
                         <button class="site__button js-button-open" data-mode="nginx_conf" :data-file="site" data-exec="edit_site_config">Edit</button>
+                        <button class="site__button" data-mode="nginx_conf" :data-file="site" data-exec="delete_site_config">Delete</button>
                     </div>
                 </div>
             </div>

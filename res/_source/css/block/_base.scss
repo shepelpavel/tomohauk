@@ -25,6 +25,7 @@
 * {
     box-sizing: border-box;
     font-family: monospace, sans-serif;
+    color: rgba(var(--color_white), 0.6);
 }
 
 html {
@@ -56,12 +57,12 @@ button {
     border: 1px solid rgba(var(--color_black), 1);
     border-radius: 0;
     background-color: rgba(var(--color_black), 0.5);
-    color: rgba(var(--color_white), 1);
+    color: rgba(var(--color_white), 0.6);
     cursor: pointer;
     transition: .3s;
 
     &:hover {
-        background-color: rgba(var(--color_white), 0.1);
+        background-color: rgba(var(--color_light), 0.1);
     }
 }
 
