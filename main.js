@@ -158,7 +158,7 @@ ipcMain.on('add_domain', (event, options) => {
     var _config = `server {
     listen 80;
     listen [::]:80;
-    root /var/www/${options.name};
+    root /var/www/${options.name}${options.public};
     index index.html index.php;
     server_name ${options.name};
     location / {

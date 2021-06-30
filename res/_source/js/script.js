@@ -226,7 +226,9 @@ ipcRenderer.on('clear-inputs-git', (event, resp) => {
 })
 ipcRenderer.on('clear-inputs-domain', (event, resp) => {
     $('input[name="add_domain_name"]').val('')
+    $('input[name="add_domain_public"]').val('/')
     nginx.name = ''
+    nginx.public = '/'
 })
 ipcRenderer.on('git-status-push', (event, resp) => {
     git.need_push += resp + '\n'
