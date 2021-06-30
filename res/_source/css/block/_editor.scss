@@ -40,6 +40,7 @@
             width: 50px;
             height: 3px;
             background-color: rgba(var(--color_light), 0.6);
+            transition: .2s;
         }
 
         &::before {
@@ -48,6 +49,14 @@
 
         &::after {
             transform: rotate(-45deg);
+        }
+
+        &:hover {
+
+            &::before,
+            &::after {
+                background-color: rgba(var(--color_light), 1);
+            }
         }
     }
 
@@ -58,6 +67,12 @@
         width: 60px;
         background-color: rgba(var(--color_light), 0.3);
         border: rgba(var(--color_light), 0.3);
+
+        &:hover {
+            background-color: rgba(var(--color_light), 0.8);
+            border: rgba(var(--color_light), 0.8);
+            color: rgba(var(--color_black), 1);
+        }
     }
 
     &.hide-editor {
