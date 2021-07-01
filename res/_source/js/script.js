@@ -80,6 +80,7 @@ var nginx = new Vue({
     data: {
         name: '',
         public: '/',
+        proxy: false,
         php_ver: [],
         php_use: '7.4',
         sites_enable: []
