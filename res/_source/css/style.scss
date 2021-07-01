@@ -7,5 +7,7 @@
 @import 'block/terminal';
 @import 'block/editor';
 
+@import 'chunk/nginx';
+@import 'chunk/add_domain';
 @import 'chunk/php';
 @import 'chunk/need_push';

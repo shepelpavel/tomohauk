@@ -1,7 +1,6 @@
 function eventSenderSend(event, resp) {
     switch (event) {
         case 'settings-data':
-            console.log(settings);
             settings.settings = resp
             break;
         case 'system-res':
@@ -31,6 +30,10 @@ function eventSenderSend(event, resp) {
         case 'git-status-push':
             git.need_push += resp + '\n'
             git.show_push = true
+            break;
+        case 'clear-inputs-domain':
+            nginx.name = ''
+            nginx.public = '/'
             break;
         default:
             break;
@@ -99,6 +102,50 @@ var editor = new Vue({
                 text: this.text
             }
             ipcRenderer('save_file', _data)
+        }
+    }
+})
+
+var nginx = new Vue({
+    el: '#nginx',
+    data: {
+        name: '',
+        public: '/',
+        php_ver: ['5.6', '7.2', '7.4'],
+        php_use: '7.4',
+        sites_enable: ['test', 'temp', 'tomohauk']
+    },
+    methods: {
+        phpSelected: function (php_use, ver) {
+            if (php_use == ver) {
+                return 'enabled'
+            }
+        },
+        usePhpVer: function (event) {
+            if (!event.target.classList.contains('enabled')) {
+                this.php_use = $(event.target).text()
+            }
+        },
+        hideAddButton: function (name) {
+            if (name.replace(/[^0-9a-zA-Z]+/g, '').length > 0) {
+                return 'show'
+            } else {
+                return 'hide'
+            }
+        },
+        addDomain: function () {
+            loader.show = true
+            var _data = {
+                name: this.name,
+                public: this.public,
+                php: this.php_use
+            }
+            this.sites_enable.push(this.name)
+            ipcRenderer('add_domain', _data)
+        },
+        delDomain: function (event) {
+            var _name = $(event.target).attr('data-file')
+            this.sites_enable.splice(this.sites_enable.indexOf(_name), 1)
         }
     }
 })
@@ -176,7 +223,7 @@ var git = new Vue({
     }
 })
 
-openPage('apache')
+openPage('nginx')
 
 $('.js-button').on('click', function () {
     loader.show = true
@@ -184,14 +231,15 @@ $('.js-button').on('click', function () {
     ipcRenderer(_exec)
 })
 
-$('.js-button-open').on('click', function () {
+$('body').on('click', '.js-button-open', function () {
     var _exec = $(this).attr('data-exec')
     var _file = $(this).attr('data-file')
-    if ($(this).hasClass('with-save') && _file) {
-        editor.save_btn = true
-        editor.file = settings.settings[_file]
+    var _mode = $(this).attr('data-mode')
+    var _data = {
+        file: _file,
+        mode: _mode
     }
-    ipcRenderer(_exec)
+    ipcRenderer(_exec, _data)
 })
 
 $('.js-menu-button').on('click', function () {
