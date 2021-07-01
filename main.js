@@ -295,6 +295,8 @@ ipcMain.on('show_nginx_error_log', (event, options) => {
                     be_save: false
                 }
                 event.sender.send('to-editor', _to_editor)
+            } else {
+                event.sender.send('system-res', 'file empty')
             }
             event.sender.send('loader-hide')
         })
@@ -317,6 +319,8 @@ ipcMain.on('show_nginx_access_log', (event, options) => {
                     be_save: false
                 }
                 event.sender.send('to-editor', _to_editor)
+            } else {
+                event.sender.send('system-res', 'file empty')
             }
             event.sender.send('loader-hide')
         })
@@ -339,6 +343,8 @@ ipcMain.on('show_apache_error_log', (event, options) => {
                     be_save: false
                 }
                 event.sender.send('to-editor', _to_editor)
+            } else {
+                event.sender.send('system-res', 'file empty')
             }
             event.sender.send('loader-hide')
         })
