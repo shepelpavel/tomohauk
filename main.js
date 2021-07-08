@@ -3,11 +3,13 @@ const {
     BrowserWindow,
     ipcMain
 } = require('electron')
+const os = require('os')
 const path = require('path')
 const fs = require('fs')
 const exec = require('child_process').exec
 const configDir = app.getPath('userData') + '/settings/'
 const configFile = configDir + 'settings.json'
+const username = os.userInfo().username
 
 /////////////// function ////////////////////
 
@@ -75,10 +77,13 @@ app.on('window-all-closed', () => {
 
 ////////////////// ipc //////////////////////
 
+// get settings from file
 ipcMain.on('get_settings', (event, options) => {
     _result = JSON.parse(fs.readFileSync(configFile))
     event.sender.send('settings-data', _result)
 })
+
+// write settings to file
 ipcMain.on('write_settings', (event, options) => {
     var _json = JSON.stringify(options)
     fs.writeFile(configFile, _json, 'utf8', function (err, data) {
@@ -94,6 +99,8 @@ ipcMain.on('write_settings', (event, options) => {
         event.sender.send('loader-hide')
     })
 })
+
+// get installed php version
 ipcMain.on('get_php_ver', (event, options) => {
     var _result = []
     if (fs.existsSync('/etc/php/')) {
@@ -105,6 +112,8 @@ ipcMain.on('get_php_ver', (event, options) => {
         }
     }
 })
+
+// get enabled php version
 ipcMain.on('get_cur_php_ver', (event, options) => {
     var _result = ''
     if (fs.existsSync('/etc/apache2/mods-available/')) {
@@ -121,6 +130,8 @@ ipcMain.on('get_cur_php_ver', (event, options) => {
         }
     }
 })
+
+// save file from editor
 ipcMain.on('save_file', (event, options) => {
     fs.writeFile(configDir + 'tmp', options.text, 'utf8', function (err, data) {
         if (err) {
@@ -142,6 +153,8 @@ ipcMain.on('save_file', (event, options) => {
         }
     })
 })
+
+// get nginx enabled sites
 ipcMain.on('get_sites_enable', (event, options) => {
     var _site_conf = '/etc/nginx/sites-enabled/'
     var _result = []
@@ -154,8 +167,78 @@ ipcMain.on('get_sites_enable', (event, options) => {
         }
     }
 })
+
+// add domain to local
 ipcMain.on('add_domain', (event, options) => {
-    var _config = `server {
+    var _hosts = '127.0.0.1 ' + options.name
+    fs.readFile(configFile, 'utf8', function (err, data) {
+        var config = JSON.parse(data)
+        if (config) {
+            if (options.proxy) {
+                // if proxy nginx to apache
+                var _config_nginx = `server {
+    listen 80;
+    listen [::]:80;
+    server_name ${options.name};
+    location / {
+        proxy_set_header X-Real-IP  $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Host $host;
+        proxy_pass http://127.0.0.1:8080;
+    }
+}
+`
+                var _config_apache = `<VirtualHost ${options.name}:8080>
+    ServerName ${options.name}
+    DocumentRoot /var/www/${options.name}
+    <IfModule mpm_itk_module>
+        AssignUserId ${username} ${username}
+    </IfModule>
+    <Directory /var/www/${options.name}>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+`
+                if (!fs.existsSync('/etc/nginx/sites-available/' + options.name)) {
+                    fs.writeFile(configDir + 'tmp_domain_nginx', _config_nginx, 'utf8', function (err, data) {
+                        if (err) {
+                            event.sender.send('system-res', 'error save tmp_domain_nginx file')
+                            event.sender.send('system-res', err)
+                            event.sender.send('loader-hide')
+                        } else {
+                            fs.writeFile(configDir + 'tmp_domain_apache', _config_apache, 'utf8', function (err, data) {
+                                if (err) {
+                                    event.sender.send('system-res', 'error save tmp_domain_apache file')
+                                    event.sender.send('system-res', err)
+                                    event.sender.send('loader-hide')
+                                } else {
+                                    var _exec = 'sudo mv ' + configDir + 'tmp_domain_nginx /etc/nginx/sites-available/' + options.name + ' && sudo mv ' + configDir + 'tmp_domain_apache /etc/apache2/sites-available/' + options.name + '.conf && sudo chown -R root:root /etc/nginx/sites-available/' + options.name + ' && sudo chmod 644 /etc/nginx/sites-available/' + options.name + ' && sudo chown -R root:root /etc/apache2/sites-available/' + options.name + '.conf && sudo chmod 644 /etc/apache2/sites-available/' + options.name + '.conf && sudo a2ensite ' + options.name + '.conf && sudo ln -s /etc/nginx/sites-available/' + options.name + ' /etc/nginx/sites-enabled/ && echo "' + _hosts + '" | sudo tee -a ' + config.hosts_path + ' && sudo service apache2 restart && sudo service nginx restart'
+                                    dir = exec(_exec, function (err, stdout, stderr) {
+                                        if (err) {
+                                            event.sender.send('system-res', 'error exec command')
+                                            event.sender.send('system-res', stderr)
+                                        } else {
+                                            event.sender.send('system-res', stdout)
+                                            event.sender.send('system-res', 'domain added')
+                                            event.sender.send('clear-inputs-domain')
+                                        }
+                                        event.sender.send('loader-hide')
+                                        event.sender.send('rescan-sites')
+                                    })
+                                }
+                            })
+                        }
+                    })
+                } else {
+                    event.sender.send('system-res', 'domain exist')
+                    event.sender.send('loader-hide')
+                    event.sender.send('clear-inputs-domain')
+                }
+            } else {
+                // if no proxy to apache, use only nginx
+                var _config_nginx = `server {
     listen 80;
     listen [::]:80;
     root /var/www/${options.name}${options.public};
@@ -172,43 +255,51 @@ ipcMain.on('add_domain', (event, options) => {
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
     }
     error_page 405 =200 $uri;
-}`
-    var _hosts = '127.0.0.1 ' + options.name
-    if (!fs.existsSync('/etc/nginx/sites-available/' + options.name)) {
-        fs.writeFile(configDir + 'tmp_domain', _config, 'utf8', function (err, data) {
-            if (err) {
-                event.sender.send('system-res', 'error save tmp_domain file')
-                event.sender.send('system-res', err)
-                event.sender.send('loader-hide')
-            } else {
-                var _exec = 'sudo mv ' + configDir + 'tmp_domain /etc/nginx/sites-available/' + options.name + ' && sudo chown -R root:root /etc/nginx/sites-available/' + options.name + ' && sudo chmod 644 /etc/nginx/sites-available/' + options.name + ' && sudo ln -s /etc/nginx/sites-available/' + options.name + ' /etc/nginx/sites-enabled/ && echo "' + _hosts + '" | sudo tee -a /etc/hosts && sudo service nginx restart'
-                dir = exec(_exec, function (err, stdout, stderr) {
-                    if (err) {
-                        event.sender.send('system-res', 'error save file')
-                        event.sender.send('system-res', stderr)
-                    } else {
-                        event.sender.send('system-res', stdout)
-                        event.sender.send('system-res', 'domain added')
-                        event.sender.send('clear-inputs-domain')
-                    }
+}
+`
+                if (!fs.existsSync('/etc/nginx/sites-available/' + options.name)) {
+                    fs.writeFile(configDir + 'tmp_domain_nginx', _config_nginx, 'utf8', function (err, data) {
+                        if (err) {
+                            event.sender.send('system-res', 'error save tmp_domain_nginx file')
+                            event.sender.send('system-res', err)
+                            event.sender.send('loader-hide')
+                        } else {
+                            var _exec = 'sudo mv ' + configDir + 'tmp_domain_nginx /etc/nginx/sites-available/' + options.name + ' && sudo chown -R root:root /etc/nginx/sites-available/' + options.name + ' && sudo chmod 644 /etc/nginx/sites-available/' + options.name + ' && sudo ln -s /etc/nginx/sites-available/' + options.name + ' /etc/nginx/sites-enabled/ && echo "' + _hosts + '" | sudo tee -a ' + config.hosts_path + ' && sudo service nginx restart'
+                            dir = exec(_exec, function (err, stdout, stderr) {
+                                if (err) {
+                                    event.sender.send('system-res', 'error exec command')
+                                    event.sender.send('system-res', stderr)
+                                } else {
+                                    event.sender.send('system-res', stdout)
+                                    event.sender.send('system-res', 'domain added')
+                                    event.sender.send('clear-inputs-domain')
+                                }
+                                event.sender.send('loader-hide')
+                                event.sender.send('rescan-sites')
+                            })
+                        }
+                    })
+                } else {
+                    event.sender.send('system-res', 'domain exist')
                     event.sender.send('loader-hide')
-                    event.sender.send('rescan-sites')
-                })
+                    event.sender.send('clear-inputs-domain')
+                }
             }
-        })
-    } else {
-        event.sender.send('system-res', 'domain exist')
-        event.sender.send('loader-hide')
-        event.sender.send('clear-inputs-domain')
-    }
+        } else {
+            event.sender.send('system-res', 'error open config')
+            event.sender.send('loader-hide')
+        }
+    })
 })
+
+// open site config for nginx in editor
 ipcMain.on('edit_site_config', (event, options) => {
     var _site_conf = '/etc/nginx/sites-available/' + options.file
     if (fs.existsSync(_site_conf)) {
         event.sender.send('system-res', 'opening ...')
         fs.readFile(_site_conf, 'utf8', function (err, data) {
             if (err) {
-                event.sender.send('system-res', 'error open config file ' + config.hosts_path)
+                event.sender.send('system-res', 'error open config file ' + _site_conf)
                 event.sender.send('system-res', err)
             } else if (data) {
                 var _to_editor = {
@@ -224,6 +315,49 @@ ipcMain.on('edit_site_config', (event, options) => {
         event.sender.send('system-res', 'config not exist ...')
     }
 })
+
+// delete site configs for nginx and apache
+ipcMain.on('delete_site_config', (event, site) => {
+    fs.readFile(configFile, 'utf8', function (err, data) {
+        var config = JSON.parse(data)
+        if (config) {
+            var _exec = ''
+            if (fs.existsSync('/etc/nginx/sites-enabled/' + site)) {
+                _exec += 'sudo rm /etc/nginx/sites-enabled/' + site + ' && '
+            }
+            if (fs.existsSync('/etc/nginx/sites-available/' + site)) {
+                _exec += 'sudo rm /etc/nginx/sites-available/' + site + ' && '
+            }
+            if (fs.existsSync('/etc/apache2/sites-enabled/' + site + '.conf')) {
+                _exec += 'sudo rm /etc/apache2/sites-enabled/' + site + '.conf && '
+            }
+            if (fs.existsSync('/etc/apache2/sites-available/' + site + '.conf')) {
+                _exec += 'sudo rm /etc/apache2/sites-available/' + site + '.conf && '
+            }
+            if (_exec.length > 0) {
+                _exec += "sudo sed -i '/127.0.0.1 " + site + "/d' " + config.hosts_path + " && sudo service apache2 restart && sudo service nginx restart"
+                dir = exec(_exec, function (err, stdout, stderr) {
+                    if (err) {
+                        event.sender.send('system-res', 'error delete domain configs')
+                        event.sender.send('system-res', stderr)
+                    } else {
+                        if (stdout) {
+                            event.sender.send('system-res', stdout)
+                        }
+                        event.sender.send('system-res', 'domain configs deleted')
+                    }
+                    event.sender.send('rescan-sites')
+                    event.sender.send('loader-hide')
+                })
+            }
+        } else {
+            event.sender.send('system-res', 'error open config')
+            event.sender.send('loader-hide')
+        }
+    })
+})
+
+// enable checked php version
 ipcMain.on('set_php_ver', (event, options) => {
     if (options.en_ver.length > 0 &&
         options.all_ver.length > 0
@@ -250,6 +384,8 @@ ipcMain.on('set_php_ver', (event, options) => {
         })
     }
 })
+
+// restart nginx
 ipcMain.on('restart_nginx', (event, options) => {
     var _exec = 'sudo service nginx restart'
     dir = exec(_exec, function (err, stdout, stderr) {
@@ -265,6 +401,8 @@ ipcMain.on('restart_nginx', (event, options) => {
         event.sender.send('loader-hide')
     })
 })
+
+// restart apache
 ipcMain.on('restart_apache', (event, options) => {
     var _exec = 'sudo service apache2 restart'
     dir = exec(_exec, function (err, stdout, stderr) {
@@ -280,6 +418,8 @@ ipcMain.on('restart_apache', (event, options) => {
         event.sender.send('loader-hide')
     })
 })
+
+// show nginx error log
 ipcMain.on('show_nginx_error_log', (event, options) => {
     var _log_file = '/var/log/nginx/error.log'
     if (fs.existsSync(_log_file)) {
@@ -304,6 +444,8 @@ ipcMain.on('show_nginx_error_log', (event, options) => {
         event.sender.send('system-res', 'error.log: file not exist')
     }
 })
+
+// show nginx access log
 ipcMain.on('show_nginx_access_log', (event, options) => {
     var _log_file = '/var/log/nginx/access.log'
     if (fs.existsSync(_log_file)) {
@@ -328,6 +470,8 @@ ipcMain.on('show_nginx_access_log', (event, options) => {
         event.sender.send('system-res', 'access.log: file not exist')
     }
 })
+
+// show apache error log
 ipcMain.on('show_apache_error_log', (event, options) => {
     var _log_file = '/var/log/apache2/error.log'
     if (fs.existsSync(_log_file)) {
@@ -352,6 +496,8 @@ ipcMain.on('show_apache_error_log', (event, options) => {
         event.sender.send('system-res', 'error.log: file not exist')
     }
 })
+
+// show apache access log
 ipcMain.on('show_apache_access_log', (event, options) => {
     var _log_file = '/var/log/apache2/access.log'
     if (fs.existsSync(_log_file)) {
@@ -376,6 +522,8 @@ ipcMain.on('show_apache_access_log', (event, options) => {
         event.sender.send('system-res', 'access.log: file not exist')
     }
 })
+
+// edit sites config file for apache
 ipcMain.on('edit_mysites_conf', (event, options) => {
     event.sender.send('system-res', 'opening ...')
     fs.readFile(configFile, 'utf8', function (err, data) {
@@ -401,6 +549,8 @@ ipcMain.on('edit_mysites_conf', (event, options) => {
         }
     })
 })
+
+// edit hosts file
 ipcMain.on('edit_hosts', (event, options) => {
     event.sender.send('system-res', 'opening ...')
     fs.readFile(configFile, 'utf8', function (err, data) {
@@ -426,6 +576,8 @@ ipcMain.on('edit_hosts', (event, options) => {
         }
     })
 })
+
+// git clone repository
 ipcMain.on('git_clone', (event, options) => {
     var _name = options.repo_name
     if (!_name.length > 0) {
@@ -455,6 +607,8 @@ ipcMain.on('git_clone', (event, options) => {
         }
     })
 })
+
+// check forgotten commits
 ipcMain.on('check_pushed', (event, options) => {
     fs.readFile(configFile, 'utf8', function (err, data) {
         var config = JSON.parse(data)
