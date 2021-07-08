@@ -80,6 +80,7 @@ var nginx = new Vue({
     data: {
         name: '',
         public: '/',
+        proxy: false,
         php_ver: [],
         php_use: '7.4',
         sites_enable: []
@@ -110,9 +111,15 @@ var nginx = new Vue({
             var _data = {
                 name: this.name,
                 public: this.public,
-                php: this.php_use
+                php: this.php_use,
+                proxy: this.proxy
             }
             ipcRenderer.send('add_domain', _data)
+        },
+        deleteSiteConfig: function(e) {
+            loader.show = true
+            var _site = $(e.target).attr('data-file')
+            ipcRenderer.send('delete_site_config', _site)
         }
     }
 })
@@ -229,6 +236,7 @@ ipcRenderer.on('clear-inputs-domain', (event, resp) => {
     $('input[name="add_domain_public"]').val('/')
     nginx.name = ''
     nginx.public = '/'
+    nginx.proxy = false
 })
 ipcRenderer.on('git-status-push', (event, resp) => {
     git.need_push += resp + '\n'

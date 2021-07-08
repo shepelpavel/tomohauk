@@ -1,13 +1,13 @@
 @import 'block/var';
 @import 'block/reset';
 @import 'block/base';
+
 @import 'block/menu';
 @import 'block/content';
 @import 'block/loader';
 @import 'block/terminal';
 @import 'block/editor';
-
-@import 'chunk/nginx';
-@import 'chunk/add_domain';
-@import 'chunk/php';
-@import 'chunk/need_push';
+@import 'block/nginx';
+@import 'block/add_domain';
+@import 'block/php';
+@import 'block/need_push';

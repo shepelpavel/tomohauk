@@ -72,6 +72,12 @@
                 <input type="text" id="add_domain_public" name="add_domain_public" v-model="public" />
                 <div class="limiter"></div>
                 <label>
+                    proxy to apache
+                </label>
+                <input type="checkbox" id="proxy_to_apache" name="proxy_to_apache" v-model="proxy" />
+                <label for="proxy_to_apache"></label>
+                <div class="limiter"></div>
+                <label>
                     php ver.
                 </label>
                 <div class="php-use">
@@ -86,7 +92,7 @@
                     <div class="nginx__sites_item" v-for="site in sites_enable">
                         <div class="site__name">{{site}}</div>
                         <button class="site__button js-button-open" data-mode="nginx_conf" :data-file="site" data-exec="edit_site_config">Edit</button>
-                        <button class="site__button" data-mode="nginx_conf" :data-file="site" data-exec="delete_site_config">Delete</button>
+                        <button class="site__button" data-mode="nginx_conf" :data-file="site" @click="deleteSiteConfig">Delete</button>
                     </div>
                 </div>
             </div>
