@@ -4,9 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>Tomohauk</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <script src="assets/module/jquery/jquery.min.js"></script>
-    <script src="assets/module/vue/vue.min.js"></script>
+    <link rel="stylesheet" href="./../_assets/css/style.css">
 </head>
 
 <body>
@@ -18,31 +16,37 @@
         </div>
         <div class="menu__item js-menu-item" data-page="nginx">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="assets/svg/sprite.svg#nginx"></use>
+                <use xlink:href="./../_assets/svg/sprite.svg#nginx"></use>
+            </svg>
+            <span>Nginx</span>
+        </div>
+        <div class="menu__item js-menu-item" data-page="nginx">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <use xlink:href="./../_assets/svg/sprite.svg#nginx"></use>
             </svg>
             <span>Nginx</span>
         </div>
         <div class="menu__item js-menu-item" data-page="apache">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="assets/svg/sprite.svg#apache"></use>
+                <use xlink:href="./../_assets/svg/sprite.svg#apache"></use>
             </svg>
             <span>Apache</span>
         </div>
         <div class="menu__item js-menu-item" data-page="git">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="assets/svg/sprite.svg#git"></use>
+                <use xlink:href="./../_assets/svg/sprite.svg#git"></use>
             </svg>
             <span>Git</span>
         </div>
         <div class="menu__item js-menu-item" data-page="logs">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="assets/svg/sprite.svg#logs"></use>
+                <use xlink:href="./../_assets/svg/sprite.svg#logs"></use>
             </svg>
             <span>Logs</span>
         </div>
         <div class="menu__settings js-menu-item" data-page="settings">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="assets/svg/sprite.svg#settings"></use>
+                <use xlink:href="./../_assets/svg/sprite.svg#settings"></use>
             </svg>
             <span>Settings</span>
         </div>
@@ -88,7 +92,7 @@
                     <div class="nginx__sites_item" v-for="site in sites_enable">
                         <div class="site__name">{{site}}</div>
                         <button class="site__button js-button-open" data-mode="nginx_conf" :data-file="site" data-exec="edit_site_config">Edit</button>
-                        <button class="site__button" data-mode="nginx_conf" :data-file="site" data-exec="delete_site_config" @click="delDomain">Delete</button>
+                        <button class="site__button" data-mode="nginx_conf" :data-file="site" data-exec="delete_site_config">Delete</button>
                     </div>
                 </div>
             </div>
@@ -98,13 +102,13 @@
                 <label>
                     Edit hosts:
                 </label>
-                <button class="js-button-open with-save" data-exec="edit_hosts" data-file="hosts_path">Edit</button>
+                <button class="js-button-open" data-exec="edit_hosts">Edit</button>
             </div>
             <div class="page__item">
                 <label>
                     Edit mysites.conf:
                 </label>
-                <button class="js-button-open with-save" data-exec="edit_mysites_conf" data-file="sites_conig_path">Edit</button>
+                <button class="js-button-open" data-exec="edit_mysites_conf">Edit</button>
             </div>
             <div class="page__item">
                 <label>
@@ -178,9 +182,9 @@
             </div>
             <div class="page__item">
                 <label for="sites_conig_path">
-                    Sites config file:
+                    Apache sites file:
                 </label>
-                <input type="text" id="sites_conig_path" name="sites_conig_path" v-model="settings.sites_conig_path" />
+                <input type="text" id="sites_conig_path" name="sites_conig_path" v-model="settings.sites_conig_path" :value="settings.sites_conig_path" />
                 <button class="js-save hide" data-save="sites_conig_path" data-show="sites_conig_path">Save</button>
             </div>
             <div class="page__item">
@@ -204,9 +208,9 @@
 </body>
 
 <div style="display: none;">
-    <img src="assets/svg/sprite.svg">
+    <img src="./../_assets/svg/sprite.svg">
 </div>
 
-<script src="assets/js/bundle.min.js"></script>
+<script src="./../_assets/js/bundle.min.js"></script>
 
 </html>
