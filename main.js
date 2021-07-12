@@ -181,20 +181,22 @@ ipcMain.on('add_domain', (event, options) => {
     listen [::]:80;
     server_name ${options.name};
     location / {
-        proxy_set_header X-Real-IP  $remote_addr;
-        proxy_set_header X-Forwarded-For $remote_addr;
-        proxy_set_header Host $host;
         proxy_pass http://127.0.0.1:8080;
+        proxy_redirect http://127.0.0.1:8080 /;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 `
                 var _config_apache = `<VirtualHost ${options.name}:8080>
     ServerName ${options.name}
-    DocumentRoot /var/www/${options.name}
+    DocumentRoot /var/www/${options.name}${options.public}
     <IfModule mpm_itk_module>
         AssignUserId ${username} ${username}
     </IfModule>
-    <Directory /var/www/${options.name}>
+    <Directory /var/www/${options.name}${options.public}>
         Options Indexes FollowSymLinks
         AllowOverride All
         Require all granted
@@ -335,7 +337,7 @@ ipcMain.on('delete_site_config', (event, site) => {
                 _exec += 'sudo rm /etc/apache2/sites-available/' + site + '.conf && '
             }
             if (_exec.length > 0) {
-                _exec += "sudo sed -i '/127.0.0.1 " + site + "/d' " + config.hosts_path + " && sudo service apache2 restart && sudo service nginx restart"
+                _exec += "sudo sed -i '/127\.0\.0\.1 *" + site + "$/d' " + config.hosts_path + " && sudo service apache2 restart && sudo service nginx restart"
                 dir = exec(_exec, function (err, stdout, stderr) {
                     if (err) {
                         event.sender.send('system-res', 'error delete domain configs')
