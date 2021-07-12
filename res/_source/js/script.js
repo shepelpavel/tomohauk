@@ -121,6 +121,13 @@ var nginx = new Vue({
             var _site = $(e.target).attr('data-file')
             ipcRenderer.send('delete_site_config', _site)
         }
+    },
+    watch: {
+        public: function() {
+            if (this.public[0] != '/') {
+                this.public = '/' + this.public
+            }
+        }
     }
 })
 
