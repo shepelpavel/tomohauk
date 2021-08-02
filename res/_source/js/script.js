@@ -131,6 +131,16 @@ var nginx = new Vue({
     }
 })
 
+var apache = new Vue({
+    el: '#apache',
+    data: {
+        sites_enable: []
+    },
+    mounted: function () {
+        ipcRenderer.send('get_sites_enable_apache')
+    },
+})
+
 var php = new Vue({
     el: '#php',
     data: {
@@ -213,8 +223,12 @@ ipcRenderer.on('system-res', (event, resp) => {
 ipcRenderer.on('sites-enable-arr', (event, resp) => {
     nginx.sites_enable = resp
 })
+ipcRenderer.on('sites-enable-arr-apache', (event, resp) => {
+    apache.sites_enable = resp
+})
 ipcRenderer.on('rescan-sites', (event, resp) => {
     ipcRenderer.send('get_sites_enable')
+    ipcRenderer.send('get_sites_enable_apache')
 })
 ipcRenderer.on('php-available', (event, resp) => {
     php.php_ver = resp

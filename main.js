@@ -162,9 +162,19 @@ ipcMain.on('get_sites_enable', (event, options) => {
         fs.readdirSync(_site_conf).forEach(function (file) {
             _result.push(file)
         })
-        if (_result.length > 0) {
-            event.sender.send('sites-enable-arr', _result)
-        }
+        event.sender.send('sites-enable-arr', _result)
+    }
+})
+
+// get apache enabled sites
+ipcMain.on('get_sites_enable_apache', (event, options) => {
+    var _site_conf = '/etc/apache2/sites-enabled/'
+    var _result = []
+    if (fs.existsSync(_site_conf)) {
+        fs.readdirSync(_site_conf).forEach(function (file) {
+            _result.push(file)
+        })
+        event.sender.send('sites-enable-arr-apache', _result)
     }
 })
 
@@ -192,11 +202,11 @@ ipcMain.on('add_domain', (event, options) => {
 `
                 var _config_apache = `<VirtualHost ${options.name}:8080>
     ServerName ${options.name}
-    DocumentRoot /var/www/${options.name}${options.public}
+    DocumentRoot ${config.projects_path}${options.name}${options.public}
     <IfModule mpm_itk_module>
         AssignUserId ${username} ${username}
     </IfModule>
-    <Directory /var/www/${options.name}${options.public}>
+    <Directory ${config.projects_path}${options.name}${options.public}>
         Options Indexes FollowSymLinks
         AllowOverride All
         Require all granted
@@ -243,7 +253,7 @@ ipcMain.on('add_domain', (event, options) => {
                 var _config_nginx = `server {
     listen 80;
     listen [::]:80;
-    root /var/www/${options.name}${options.public};
+    root ${config.projects_path}${options.name}${options.public};
     index index.html index.php;
     server_name ${options.name};
     location / {
@@ -297,6 +307,30 @@ ipcMain.on('add_domain', (event, options) => {
 // open site config for nginx in editor
 ipcMain.on('edit_site_config', (event, options) => {
     var _site_conf = '/etc/nginx/sites-available/' + options.file
+    if (fs.existsSync(_site_conf)) {
+        event.sender.send('system-res', 'opening ...')
+        fs.readFile(_site_conf, 'utf8', function (err, data) {
+            if (err) {
+                event.sender.send('system-res', 'error open config file ' + _site_conf)
+                event.sender.send('system-res', err)
+            } else if (data) {
+                var _to_editor = {
+                    file: _site_conf,
+                    text: data,
+                    be_save: true
+                }
+                event.sender.send('to-editor', _to_editor)
+            }
+            event.sender.send('loader-hide')
+        })
+    } else {
+        event.sender.send('system-res', 'config not exist ...')
+    }
+})
+
+// open site config for nginx in editor
+ipcMain.on('edit_site_config_apache', (event, options) => {
+    var _site_conf = '/etc/apache2/sites-available/' + options.file
     if (fs.existsSync(_site_conf)) {
         event.sender.send('system-res', 'opening ...')
         fs.readFile(_site_conf, 'utf8', function (err, data) {
@@ -523,33 +557,6 @@ ipcMain.on('show_apache_access_log', (event, options) => {
     } else {
         event.sender.send('system-res', 'access.log: file not exist')
     }
-})
-
-// edit sites config file for apache
-ipcMain.on('edit_mysites_conf', (event, options) => {
-    event.sender.send('system-res', 'opening ...')
-    fs.readFile(configFile, 'utf8', function (err, data) {
-        var config = JSON.parse(data)
-        if (config) {
-            fs.readFile(config.sites_conig_path, 'utf8', function (err, data) {
-                if (err) {
-                    event.sender.send('system-res', 'error open file ' + config.sites_conig_path)
-                    event.sender.send('system-res', err)
-                } else if (data) {
-                    var _to_editor = {
-                        file: config.sites_conig_path,
-                        text: data,
-                        be_save: true
-                    }
-                    event.sender.send('to-editor', _to_editor)
-                }
-                event.sender.send('loader-hide')
-            })
-        } else {
-            event.sender.send('system-res', 'error open config')
-            event.sender.send('loader-hide')
-        }
-    })
 })
 
 // edit hosts file

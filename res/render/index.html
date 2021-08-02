@@ -97,7 +97,7 @@
                 </div>
             </div>
         </div>
-        <div class="page" data-page="apache">
+        <div id="apache" class="page" data-page="apache">
             <div class="page__item">
                 <label>
                     Edit hosts:
@@ -106,22 +106,19 @@
             </div>
             <div class="page__item">
                 <label>
-                    Edit mysites.conf:
-                </label>
-                <button class="js-button-open" data-exec="edit_mysites_conf">Edit</button>
-            </div>
-            <div class="page__item">
-                <label>
                     Restart apache:
                 </label>
                 <button class="js-button" data-exec="restart_apache">Restart</button>
             </div>
-            <div id="php" class="page__item">
+            <div class="page__item">
                 <label>
-                    PHP versions:
+                    Enable sites:
                 </label>
-                <div class="php__available">
-                    <div class="php__available_item" v-for="ver in php_ver" :class="phpCurrent(php_cur, ver)" @click="setPhpVer">{{ver}}</div>
+                <div class="apache__sites">
+                    <div class="apache__sites_item" v-for="site in sites_enable">
+                        <div class="site__name">{{site}}</div>
+                        <button class="site__button js-button-open" data-mode="apache_conf" :data-file="site" data-exec="edit_site_config_apache">Edit</button>
+                    </div>
                 </div>
             </div>
         </div>
