@@ -211,6 +211,9 @@ ipcMain.on('add_domain', (event, options) => {
         AllowOverride All
         Require all granted
     </Directory>
+    <FilesMatch \\.php$>
+        SetHandler "proxy:unix:/run/php/php${options.php}-fpm.sock|fcgi://localhost"
+    </FilesMatch>
 </VirtualHost>
 `
                 if (!fs.existsSync('/etc/nginx/sites-available/' + options.name)) {
