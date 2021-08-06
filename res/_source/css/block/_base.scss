@@ -64,6 +64,13 @@ button {
     &:hover {
         background-color: rgba(var(--color_light), 0.1);
     }
+
+    &.red {
+        color: rgba(var(--color_red), 0.8);
+    }
+    &.blue {
+        color: rgba(var(--color_blue), 0.8);
+    }
 }
 
 label {
@@ -141,9 +148,9 @@ input[type="checkbox"] {
             position: absolute;
             left: 0;
             top: 0;
-            transform: scaleY(0);
+            transform: scale(0);
             transition: .3s;
-            background-image: url(./../img/style/plus.png);
+            background-image: url(./../img/style/tick.png);
             background-position: center;
             background-repeat: no-repeat;
         }
@@ -156,7 +163,7 @@ input[type="checkbox"] {
             }
 
             &::after {
-                transform: scaleY(1);
+                transform: scale(1);
             }
         }
     }

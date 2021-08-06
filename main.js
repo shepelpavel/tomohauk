@@ -35,8 +35,7 @@ function createWindow() {
     if (!fs.existsSync(configFile)) {
         var _options = {
             projects_path: "/var/www/",
-            hosts_path: "/etc/hosts",
-            sites_conig_path: ""
+            hosts_path: "/etc/hosts"
         }
         var _json = JSON.stringify(_options)
         fs.writeFile(configFile, _json, 'utf8', function (err, data) {
@@ -109,24 +108,6 @@ ipcMain.on('get_php_ver', (event, options) => {
         })
         if (_result.length > 0) {
             event.sender.send('php-available', _result)
-        }
-    }
-})
-
-// get enabled php version
-ipcMain.on('get_cur_php_ver', (event, options) => {
-    var _result = ''
-    if (fs.existsSync('/etc/apache2/mods-available/')) {
-        fs.readdirSync('/etc/apache2/mods-enabled/').forEach(function (file) {
-            if (
-                file.match(/^php/gi) &&
-                file.match(/conf$/gi)
-            ) {
-                _result += file.replace('php', '').replace('.conf', '')
-            }
-        })
-        if (_result.length > 0) {
-            event.sender.send('php-current', _result)
         }
     }
 })
@@ -394,34 +375,6 @@ ipcMain.on('delete_site_config', (event, site) => {
             event.sender.send('loader-hide')
         }
     })
-})
-
-// enable checked php version
-ipcMain.on('set_php_ver', (event, options) => {
-    if (options.en_ver.length > 0 &&
-        options.all_ver.length > 0
-    ) {
-        var _arr = options.all_ver
-        var _exec = ''
-        for (var _i = 0; _arr.length > _i; _i++) {
-            _exec += ' sudo a2dismod php' + _arr[_i] + ' &&'
-        }
-        _exec += ' sudo a2enmod php' + options.en_ver + ' && sudo service apache2 restart'
-        dir = exec(_exec, function (err, stdout, stderr) {
-            event.sender.send('system-res', 'change php version ...')
-            if (err) {
-                event.sender.send('system-res', 'error change php version')
-                event.sender.send('system-res', stderr)
-            } else {
-                if (stdout) {
-                    event.sender.send('system-res', stdout)
-                }
-                event.sender.send('php-current', options.en_ver)
-                event.sender.send('system-res', 'apache restarted ...')
-            }
-            event.sender.send('loader-hide')
-        })
-    }
 })
 
 // restart nginx

@@ -67,18 +67,18 @@
                 <button class="js-button-adddomain" :class="hideAddButton(name)" @click="addDomain">Add</button>
                 <div class="limiter"></div>
                 <label>
-                    public path
+                    Public path:
                 </label>
                 <input type="text" id="add_domain_public" name="add_domain_public" v-model="public" />
                 <div class="limiter"></div>
                 <label>
-                    proxy to apache
+                    Proxy to apache:
                 </label>
                 <input type="checkbox" id="proxy_to_apache" name="proxy_to_apache" v-model="proxy" />
                 <label for="proxy_to_apache"></label>
                 <div class="limiter"></div>
                 <label>
-                    php ver.
+                    PHP version:
                 </label>
                 <div class="php-use">
                     <div class="php-use__item" v-for="ver in php_ver" :class="phpSelected(php_use, ver)" @click="usePhpVer">{{ver}}</div>
@@ -146,27 +146,27 @@
         <div class="page" data-page="logs">
             <div class="page__item">
                 <label>
-                    nginx error.log:
+                    Nginx error.log:
                 </label>
-                <button class="js-button-open" data-exec="show_nginx_error_log">show error.log</button>
+                <button class="js-button-open red" data-exec="show_nginx_error_log">show error.log</button>
             </div>
             <div class="page__item">
                 <label>
-                    nginx access.log:
+                    Nginx access.log:
                 </label>
-                <button class="js-button-open" data-exec="show_nginx_access_log">show access.log</button>
+                <button class="js-button-open blue" data-exec="show_nginx_access_log">show access.log</button>
             </div>
             <div class="page__item">
                 <label>
-                    apache error.log:
+                    Apache error.log:
                 </label>
-                <button class="js-button-open" data-exec="show_apache_error_log">show error.log</button>
+                <button class="js-button-open red" data-exec="show_apache_error_log">show error.log</button>
             </div>
             <div class="page__item">
                 <label>
-                    apache access.log:
+                    Apache access.log:
                 </label>
-                <button class="js-button-open" data-exec="show_apache_access_log">show access.log</button>
+                <button class="js-button-open blue" data-exec="show_apache_access_log">show access.log</button>
             </div>
         </div>
         <div id="settings" class="page" data-page="settings">
@@ -176,13 +176,6 @@
                 </label>
                 <input type="text" id="hosts_path" name="hosts_path" v-model="settings.hosts_path" />
                 <button class="js-save hide" data-save="hosts_path" data-show="hosts_path">Save</button>
-            </div>
-            <div class="page__item">
-                <label for="sites_conig_path">
-                    Apache sites file:
-                </label>
-                <input type="text" id="sites_conig_path" name="sites_conig_path" v-model="settings.sites_conig_path" :value="settings.sites_conig_path" />
-                <button class="js-save hide" data-save="sites_conig_path" data-show="sites_conig_path">Save</button>
             </div>
             <div class="page__item">
                 <label for="projects_path">

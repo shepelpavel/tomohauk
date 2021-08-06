@@ -80,7 +80,7 @@ var nginx = new Vue({
     data: {
         name: '',
         public: '/',
-        proxy: false,
+        proxy: true,
         php_ver: [],
         php_use: '7.4',
         sites_enable: []
@@ -116,14 +116,14 @@ var nginx = new Vue({
             }
             ipcRenderer.send('add_domain', _data)
         },
-        deleteSiteConfig: function(e) {
+        deleteSiteConfig: function (e) {
             loader.show = true
             var _site = $(e.target).attr('data-file')
             ipcRenderer.send('delete_site_config', _site)
         }
     },
     watch: {
-        public: function() {
+        public: function () {
             if (this.public[0] != '/') {
                 this.public = '/' + this.public
             }
@@ -149,26 +149,7 @@ var php = new Vue({
     },
     mounted: function () {
         ipcRenderer.send('get_php_ver')
-        ipcRenderer.send('get_cur_php_ver')
     },
-    methods: {
-        phpCurrent: function (php_cur, ver) {
-            if (php_cur == ver) {
-                return 'enabled'
-            }
-        },
-        setPhpVer: function (event) {
-            if (!event.target.classList.contains('enabled')) {
-                loader.show = true
-                var _en_ver = $(event.target).text()
-                var _data = {
-                    en_ver: _en_ver,
-                    all_ver: this.php_ver
-                }
-                ipcRenderer.send('set_php_ver', _data)
-            }
-        }
-    }
 })
 
 var git = new Vue({
@@ -257,7 +238,7 @@ ipcRenderer.on('clear-inputs-domain', (event, resp) => {
     $('input[name="add_domain_public"]').val('/')
     nginx.name = ''
     nginx.public = '/'
-    nginx.proxy = false
+    nginx.proxy = true
 })
 ipcRenderer.on('git-status-push', (event, resp) => {
     git.need_push += resp + '\n'
