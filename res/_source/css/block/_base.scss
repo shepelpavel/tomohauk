@@ -64,6 +64,13 @@ button {
     &:hover {
         background-color: rgba(var(--color_light), 0.1);
     }
+
+    &.red {
+        color: rgba(var(--color_red), 0.8);
+    }
+    &.blue {
+        color: rgba(var(--color_blue), 0.8);
+    }
 }
 
 label {
@@ -104,4 +111,60 @@ input {
 
 .limiter {
     width: 100%;
+}
+
+input[type="checkbox"] {
+    position: absolute;
+    z-index: -9;
+    opacity: 0;
+    margin: 0;
+
+    &+label {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        user-select: none;
+        width: 40px;
+        max-width: 40px;
+        height: 40px;
+        max-height: 40px;
+        position: relative;
+
+        &::before {
+            position: absolute;
+            left: 0;
+            top: 0;
+            content: '';
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(var(--color_white), 0.3);
+            transition: .3s;
+        }
+
+        &::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            transform: scale(0);
+            transition: .3s;
+            background-image: url(./../img/style/tick.png);
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    }
+
+    &:checked {
+        &+label {
+            &::before {
+                border: 1px solid rgba(var(--color_light), 1);
+            }
+
+            &::after {
+                transform: scale(1);
+            }
+        }
+    }
 }

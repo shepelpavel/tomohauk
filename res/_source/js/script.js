@@ -111,6 +111,7 @@ var nginx = new Vue({
     data: {
         name: '',
         public: '/',
+        proxy: true,
         php_ver: ['5.6', '7.2', '7.4'],
         php_use: '7.4',
         sites_enable: ['test', 'temp', 'tomohauk']
@@ -141,6 +142,7 @@ var nginx = new Vue({
                 php: this.php_use
             }
             this.sites_enable.push(this.name)
+            apache.sites_enable.push(this.name)
             ipcRenderer('add_domain', _data)
         },
         delDomain: function (event) {
@@ -150,34 +152,11 @@ var nginx = new Vue({
     }
 })
 
-var php = new Vue({
-    el: '#php',
+var apache = new Vue({
+    el: '#apache',
     data: {
-        php_ver: [],
-        php_cur: ''
+        sites_enable: ['site1.conf', 'site2.conf']
     },
-    mounted: function () {
-        this.php_ver = ['5.6', '7.2', '7.4']
-        this.php_cur = '7.2'
-    },
-    methods: {
-        phpCurrent: function (php_cur, ver) {
-            if (php_cur == ver) {
-                return 'enabled'
-            }
-        },
-        setPhpVer: function (event) {
-            if (!event.target.classList.contains('enabled')) {
-                loader.show = true
-                var _en_ver = $(event.target).text()
-                var _data = {
-                    en_ver: _en_ver,
-                    all_ver: this.php_ver
-                }
-                ipcRenderer('set_php_ver', _data)
-            }
-        }
-    }
 })
 
 var git = new Vue({

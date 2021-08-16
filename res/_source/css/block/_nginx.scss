@@ -1,0 +1,30 @@
+.nginx {
+    &__sites {
+        width: 370px;
+
+        &_item {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 6px;
+
+            .site {
+                &__name {
+                    width: 200px;
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    font-size: 10px;
+                    text-align: left;
+                    border-bottom: 1px solid rgba(var(--color_light), 0.1);
+                }
+
+                &__button {
+                    height: 30px;
+                    font-size: 10px;
+                    max-width: 75px;
+                }
+            }
+        }
+    }
+}

@@ -1,7 +1,6 @@
 var _options = {
     projects_path: "/var/www/",
     hosts_path: "/etc/hosts",
-    sites_conig_path: "/etc/apache2/sites-available/mysites.conf"
 }
 
 var apacheerrorlog = `[Thu Jun 24 00:00:17.861492 2021] [mpm_prefork:notice] [pid 1413] AH00163: Apache/2.4.41 (Ubuntu) mpm-itk/2.4.7-04 configured -- resuming normal operations
@@ -55,13 +54,8 @@ function ipcRenderer(event, options = '') {
         case 'edit_site_config':
             eventSenderSend('to-editor', nginxsiteconfig)
             break;
-        case 'set_php_ver':
-            setTimeout(() => {
-                eventSenderSend('system-res', 'change php version ...')
-                eventSenderSend('php-current', options.en_ver)
-                eventSenderSend('system-res', 'apache restarted ...')
-                eventSenderSend('loader-hide')
-            }, 1000);
+        case 'edit_site_config_apache':
+            eventSenderSend('to-editor', sites_conig)
             break;
         case 'restart_apache':
             setTimeout(() => {
