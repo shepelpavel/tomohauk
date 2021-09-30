@@ -1,0 +1,32 @@
+#settings {
+    .theme {
+        display: flex;
+        gap: 10px;
+
+        &__item {
+            font-family: monospace, sans-serif;
+            font-size: 12px;
+            display: flex;
+            width: 100px;
+            height: 40px;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(var(--color_black), 1);
+            border-radius: 0;
+            background-color: rgba(var(--color_black), 0.5);
+            color: rgba(var(--color_white), 0.6);
+            cursor: pointer;
+            transition: .3s;
+            user-select: none;
+
+            &:hover {
+                background-color: rgba(var(--color_light), 0.1);
+            }
+
+            &.enabled {
+                border: 1px solid rgba(var(--color_light), 1);
+                color: rgba(var(--color_light), 1);
+            }
+        }
+    }
+}
