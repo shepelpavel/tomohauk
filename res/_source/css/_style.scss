@@ -1,4 +1,3 @@
-@import 'block/var';
 @import 'block/reset';
 @import 'block/base';
 
@@ -7,6 +6,7 @@
 @import 'block/loader';
 @import 'block/terminal';
 @import 'block/editor';
+@import 'block/settings';
 @import 'block/nginx';
 @import 'block/apache';
 @import 'block/add_domain';
