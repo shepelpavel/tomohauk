@@ -1,213 +1,241 @@
 <!DOCTYPE html>
 <html lang="ru">
-
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <title>Tomohauk</title>
-</head>
+  </head>
 
-<body style="background-color: #000000;">
+  <body style="background-color: #000000">
     <div id="loader" class="loader" v-if="show"></div>
     <div id="menu" class="menu">
-        <div class="menu__button js-menu-button">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        <div class="menu__item js-menu-item" data-page="nginx">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="./../_assets/svg/sprite.svg#nginx"></use>
-            </svg>
-            <span>Nginx</span>
-        </div>
-        <div class="menu__item js-menu-item" data-page="apache">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="./../_assets/svg/sprite.svg#apache"></use>
-            </svg>
-            <span>Apache</span>
-        </div>
-        <div class="menu__item js-menu-item" data-page="git">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="./../_assets/svg/sprite.svg#git"></use>
-            </svg>
-            <span>Git</span>
-        </div>
-        <div class="menu__item js-menu-item" data-page="logs">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="./../_assets/svg/sprite.svg#logs"></use>
-            </svg>
-            <span>Logs</span>
-        </div>
-        <div class="menu__settings js-menu-item" data-page="settings">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="./../_assets/svg/sprite.svg#settings"></use>
-            </svg>
-            <span>Settings</span>
-        </div>
+      <div class="menu__button js-menu-button">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="menu__item js-menu-item" data-page="apache">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <use xlink:href="./../_assets/svg/sprite.svg#apache"></use>
+        </svg>
+        <span>Apache</span>
+      </div>
+      <div class="menu__item js-menu-item" data-page="git">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <use xlink:href="./../_assets/svg/sprite.svg#git"></use>
+        </svg>
+        <span>Git</span>
+      </div>
+      <div class="menu__item js-menu-item" data-page="logs">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <use xlink:href="./../_assets/svg/sprite.svg#logs"></use>
+        </svg>
+        <span>Logs</span>
+      </div>
+      <div class="menu__settings js-menu-item" data-page="settings">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <use xlink:href="./../_assets/svg/sprite.svg#settings"></use>
+        </svg>
+        <span>Settings</span>
+      </div>
     </div>
     <div id="content" class="content">
-        <div id="nginx" class="page" data-page="nginx">
-            <div class="page__item">
-                <label>
-                    Edit hosts:
-                </label>
-                <button class="js-button-open" data-exec="edit_hosts">Edit</button>
-            </div>
-            <div class="page__item">
-                <label>
-                    Restart nginx:
-                </label>
-                <button class="js-button" data-exec="restart_nginx">Restart</button>
-            </div>
-            <div class="page__item add-domain">
-                <label>
-                    Add domain:
-                </label>
-                <input type="text" id="add_domain_name" name="add_domain_name" v-model="name" />
-                <button class="js-button-adddomain" :class="hideAddButton(name)" @click="addDomain">Add</button>
-                <div class="limiter"></div>
-                <label>
-                    Public path:
-                </label>
-                <input type="text" id="add_domain_public" name="add_domain_public" v-model="public" />
-                <div class="limiter"></div>
-                <label>
-                    Proxy to apache:
-                </label>
-                <input type="checkbox" id="proxy_to_apache" name="proxy_to_apache" v-model="proxy" />
-                <label for="proxy_to_apache"></label>
-                <div class="limiter"></div>
-                <label>
-                    PHP version:
-                </label>
-                <div class="php-use">
-                    <div class="php-use__item" v-for="ver in php_ver" :class="phpSelected(php_use, ver)" @click="usePhpVer">{{ver}}</div>
-                </div>
-            </div>
-            <div class="page__item">
-                <label>
-                    Enable sites:
-                </label>
-                <div class="nginx__sites">
-                    <div class="nginx__sites_item" v-for="site in sites_enable">
-                        <div class="site__name">{{site}}</div>
-                        <button class="site__button js-button-open" data-mode="nginx_conf" :data-file="site" data-exec="edit_site_config">Edit</button>
-                        <button class="site__button" data-mode="nginx_conf" :data-file="site" @click="deleteSiteConfig">Delete</button>
-                    </div>
-                </div>
-            </div>
+      <div id="apache" class="page" data-page="apache">
+        <div class="page__item">
+          <label> Edit hosts: </label>
+          <button class="js-button-open" data-exec="edit_hosts">Edit</button>
         </div>
-        <div id="apache" class="page" data-page="apache">
-            <div class="page__item">
-                <label>
-                    Edit hosts:
-                </label>
-                <button class="js-button-open" data-exec="edit_hosts">Edit</button>
-            </div>
-            <div class="page__item">
-                <label>
-                    Restart apache:
-                </label>
-                <button class="js-button" data-exec="restart_apache">Restart</button>
-            </div>
-            <div class="page__item">
-                <label>
-                    Enable sites:
-                </label>
-                <div class="apache__sites">
-                    <div class="apache__sites_item" v-for="site in sites_enable">
-                        <div class="site__name">{{site}}</div>
-                        <button class="site__button js-button-open" data-mode="apache_conf" :data-file="site" data-exec="edit_site_config_apache">Edit</button>
-                    </div>
-                </div>
-            </div>
+        <div class="page__item">
+          <label> Restart apache: </label>
+          <button class="js-button" data-exec="restart_apache">Restart</button>
         </div>
-        <div id="git" class="page" data-page="git">
-            <div class="page__item">
-                <label for="git_clone">
-                    Git clone:
-                </label>
-                <input type="text" id="git_clone" name="git_clone" v-model="git_clone" />
-                <button class="hide" data-show="git_clone" @click="gitClone" disabled>Clone</button>
-                <div class="limiter"></div>
-                <label for="git_clone">
-                    Repo name:
-                </label>
-                <input type="text" id="repo_name" name="repo_name" v-model="repo_name" />
+        <div class="page__item add-domain">
+          <label> Add domain: </label>
+          <input
+            type="text"
+            id="add_domain_name"
+            name="add_domain_name"
+            v-model="name"
+          />
+          <button
+            class="js-button-adddomain"
+            :class="hideAddButton(name)"
+            @click="addDomain"
+          >
+            Add
+          </button>
+          <div class="limiter"></div>
+          <label> Public path: </label>
+          <input
+            type="text"
+            id="add_domain_public"
+            name="add_domain_public"
+            v-model="public"
+          />
+          <div class="limiter"></div>
+          <label> PHP version: </label>
+          <div class="php-use">
+            <div
+              class="php-use__item"
+              v-for="ver in php_ver"
+              :class="phpSelected(php_use, ver)"
+              @click="usePhpVer"
+            >
+              {{ver}}
             </div>
-            <div class="page__item">
-                <label for="git_clone">
-                    Check pushed:
-                </label>
-                <button @click="checkPushed">Check</button>
-                <textarea v-if="show_push" name="need_push" id="need_push">{{need_push}}</textarea>
-            </div>
+          </div>
         </div>
-        <div class="page" data-page="logs">
-            <div class="page__item">
-                <label>
-                    Nginx error.log:
-                </label>
-                <button class="js-button-open red" data-exec="show_nginx_error_log">show error.log</button>
+        <div class="page__item">
+          <label> Enable sites: </label>
+          <div class="apache__sites">
+            <div class="apache__sites_item" v-for="site in sites_enable">
+              <div class="site__name">{{site}}</div>
+              <button
+                class="site__button js-button-open"
+                data-mode="apache_conf"
+                :data-file="site"
+                data-exec="edit_site_config"
+              >
+                Edit
+              </button>
+              <button
+                class="site__button"
+                data-mode="apache_conf"
+                :data-file="site"
+                @click="deleteSiteConfig"
+              >
+                Delete
+              </button>
             </div>
-            <div class="page__item">
-                <label>
-                    Nginx access.log:
-                </label>
-                <button class="js-button-open blue" data-exec="show_nginx_access_log">show access.log</button>
-            </div>
-            <div class="page__item">
-                <label>
-                    Apache error.log:
-                </label>
-                <button class="js-button-open red" data-exec="show_apache_error_log">show error.log</button>
-            </div>
-            <div class="page__item">
-                <label>
-                    Apache access.log:
-                </label>
-                <button class="js-button-open blue" data-exec="show_apache_access_log">show access.log</button>
-            </div>
+          </div>
         </div>
-        <div id="settings" class="page" data-page="settings">
-            <div class="page__item">
-                <label for="hosts_path">
-                    Hosts file:
-                </label>
-                <input type="text" id="hosts_path" name="hosts_path" v-model="settings.hosts_path" />
-                <button class="js-save hide" data-save="hosts_path" data-show="hosts_path">Save</button>
-            </div>
-            <div class="page__item">
-                <label for="projects_path">
-                    Projects path:
-                </label>
-                <input type="text" id="projects_path" name="projects_path" v-model="settings.projects_path" />
-                <button class="js-save hide" data-save="projects_path" data-show="projects_path">Save</button>
-            </div>
-            <div class="page__item">
-                <label>
-                    Theme:
-                </label>
-                <div class="theme">
-                    <div class="theme__item" v-for="theme in themes" :class="themeSelected(theme)" @click="useTheme">{{theme}}</div>
-                </div>
-            </div>
+      </div>
+      <div id="git" class="page" data-page="git">
+        <div class="page__item">
+          <label for="git_clone"> Git clone: </label>
+          <input
+            type="text"
+            id="git_clone"
+            name="git_clone"
+            v-model="git_clone"
+          />
+          <button class="hide" data-show="git_clone" @click="gitClone" disabled>
+            Clone
+          </button>
+          <div class="limiter"></div>
+          <label for="git_clone"> Repo name: </label>
+          <input
+            type="text"
+            id="repo_name"
+            name="repo_name"
+            v-model="repo_name"
+          />
         </div>
+        <div class="page__item">
+          <label for="git_clone"> Check pushed: </label>
+          <button @click="checkPushed">Check</button>
+          <textarea v-if="show_push" name="need_push" id="need_push">
+{{need_push}}</textarea
+          >
+        </div>
+      </div>
+      <div class="page" data-page="logs">
+        <div class="page__item">
+          <label> error.log: </label>
+          <button class="js-button-open red" data-exec="show_apache_error_log">
+            show error.log
+          </button>
+        </div>
+        <div class="page__item">
+          <label> access.log: </label>
+          <button
+            class="js-button-open blue"
+            data-exec="show_apache_access_log"
+          >
+            show access.log
+          </button>
+        </div>
+      </div>
+      <div id="settings" class="page" data-page="settings">
+        <div class="page__item">
+          <label for="hosts_path"> Hosts file: </label>
+          <input
+            type="text"
+            id="hosts_path"
+            name="hosts_path"
+            v-model="settings.hosts_path"
+          />
+          <button
+            class="js-save hide"
+            data-save="hosts_path"
+            data-show="hosts_path"
+          >
+            Save
+          </button>
+        </div>
+        <div class="page__item">
+          <label for="projects_path"> Projects path: </label>
+          <input
+            type="text"
+            id="projects_path"
+            name="projects_path"
+            v-model="settings.projects_path"
+          />
+          <button
+            class="js-save hide"
+            data-save="projects_path"
+            data-show="projects_path"
+          >
+            Save
+          </button>
+        </div>
+        <div class="page__item">
+          <label> Theme: </label>
+          <div class="theme">
+            <div
+              class="theme__item"
+              v-for="theme in themes"
+              :class="themeSelected(theme)"
+              @click="useTheme"
+            >
+              {{theme}}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div id="terminal" class="terminal">
-        <textarea class="terminal__item">{{ text }}</textarea>
+      <textarea class="terminal__item">{{ text }}</textarea>
     </div>
     <div id="editor" class="editor" :class="display">
-        <div class="editor__close js-close-editor"></div>
-        <textarea name="editor" id="" cols="30" rows="10" v-model="text"></textarea>
-        <button class="editor__save" v-if="save_btn" @click="saveFromEditor">Save</button>
+      <div class="editor__close js-close-editor"></div>
+      <textarea
+        name="editor"
+        id=""
+        cols="30"
+        rows="10"
+        v-model="text"
+      ></textarea>
+      <button class="editor__save" v-if="save_btn" @click="saveFromEditor">
+        Save
+      </button>
     </div>
-</body>
+  </body>
 
-<div style="display: none;">
-    <img src="./../_assets/svg/sprite.svg">
-</div>
+  <div style="display: none">
+    <img src="./../_assets/svg/sprite.svg" />
+  </div>
 
-<script src="./../_assets/js/bundle.min.js"></script>
-
+  <script src="./../_assets/js/bundle.min.js"></script>
 </html>

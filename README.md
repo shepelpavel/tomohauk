@@ -1,6 +1,6 @@
 # Tomohauk
 
-## Nginx/Apache config electron
+## Apache config electron
 
 ## [DEMO ->](https://tomohauk.shepel.net/)
 
